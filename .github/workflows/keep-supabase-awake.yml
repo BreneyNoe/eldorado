@@ -32,11 +32,49 @@ jobs:
             echo "::error::Variables VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY non définies."
             exit 1
           fi
-          # --fail : la tâche passe au rouge si Supabase répond par une erreur
-          # (projet en pause, par exemple), et GitHub prévient par e-mail.
-          curl --fail --silent --show-error --max-time 30 \
+          # Une valeur collée dans GitHub emporte facilement un espace ou un retour
+          # à la ligne invisible, que Supabase rejette (erreur 400). On les retire,
+          # comme le fait l'application.
+          SUPABASE_URL=$(printf '%s' "$SUPABASE_URL" | tr -d '[:space:]"')
+          SUPABASE_KEY=$(printf '%s' "$SUPABASE_KEY" | tr -d '[:space:]"')
+
+          # On envoie la clé sous ses deux formes, comme le fait l'application elle-même.
+          rm -f reponse.txt
+          status=$(curl --silent --show-error --max-time 30 \
+            --output reponse.txt --write-out '%{http_code}' \
             -X POST "${SUPABASE_URL%/}/rest/v1/rpc/ping" \
             -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY" \
             -H "Content-Type: application/json" \
-            -d '{}'
-          echo
+            -d '{}') || status=000
+
+          # Le détail est affiché pour pouvoir comprendre un échec sans deviner.
+          echo "Adresse appelée : ${SUPABASE_URL%/}/rest/v1/rpc/ping"
+          echo "Code de réponse : $status"
+          echo "Réponse : $(cat reponse.txt 2>/dev/null)"
+
+          case "$status" in
+            200)
+              echo "Supabase est éveillé."
+              ;;
+            404)
+              echo "::error::Supabase ne connaît pas la fonction ping (code 404). Exécute supabase/migrations/20261007100000_ping.sql dans le SQL Editor, ou vérifie que VITE_SUPABASE_URL est de la forme https://xxxx.supabase.co, sans rien après."
+              exit 1
+              ;;
+            400)
+              echo "::error::Supabase juge la requête mal formée (code 400). Le détail est dans la ligne « Réponse » ci-dessus."
+              exit 1
+              ;;
+            401|403)
+              echo "::error::Supabase refuse la clé (code $status). Vérifie la variable VITE_SUPABASE_PUBLISHABLE_KEY."
+              exit 1
+              ;;
+            000)
+              echo "::error::Supabase n'a pas répondu. Le projet est peut-être en pause : ouvre son tableau de bord et clique sur Restore."
+              exit 1
+              ;;
+            *)
+              echo "::error::Réponse inattendue de Supabase (code $status). Voir le détail ci-dessus."
+              exit 1
+              ;;
+          esac
