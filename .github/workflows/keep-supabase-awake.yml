@@ -1,0 +1,42 @@
+# Empêche la mise en pause du projet Supabase gratuit.
+#
+# Supabase met en pause un projet gratuit resté une semaine sans activité.
+# Cette tâche lui envoie une petite requête tous les trois jours.
+#
+# Elle utilise les mêmes variables que la publication (VITE_SUPABASE_URL et
+# VITE_SUPABASE_PUBLISHABLE_KEY) et la fonction "ping" de la base (migration 12).
+#
+# À savoir : GitHub suspend les tâches planifiées d'un dépôt resté 60 jours
+# sans modification, après un e-mail d'avertissement. Il suffit alors de la
+# réactiver dans l'onglet Actions, ou d'envoyer n'importe quelle modification.
+name: Garder Supabase éveillé
+
+on:
+  schedule:
+    # À 06 h 17 UTC, les jours 1, 4, 7... du mois (heure décalée : moins d'attente côté GitHub).
+    - cron: '17 6 */3 * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Interroger la base
+        env:
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "::error::Variables VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY non définies."
+            exit 1
+          fi
+          # --fail : la tâche passe au rouge si Supabase répond par une erreur
+          # (projet en pause, par exemple), et GitHub prévient par e-mail.
+          curl --fail --silent --show-error --max-time 30 \
+            -X POST "${SUPABASE_URL%/}/rest/v1/rpc/ping" \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{}'
+          echo

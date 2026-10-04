@@ -1,0 +1,83 @@
+# Publie l'application sur GitHub Pages à chaque envoi sur la branche "main".
+#
+# Déroulé : installation, vérifications (types, lint, tests), construction,
+# puis mise en ligne. Si une vérification échoue, rien n'est publié : la
+# version en ligne reste la précédente.
+#
+# Réglages nécessaires dans le dépôt GitHub (voir docs/deploiement.md) :
+#   - Settings > Pages > Source : "GitHub Actions"
+#   - Settings > Secrets and variables > Actions > Variables :
+#       VITE_SUPABASE_URL              (obligatoire)
+#       VITE_SUPABASE_PUBLISHABLE_KEY  (obligatoire)
+#       VITE_BASE_PATH                 (facultatif, voir plus bas)
+name: Publier sur GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Permet de relancer la publication à la main, depuis l'onglet Actions.
+  workflow_dispatch:
+
+# Droits accordés à cette tâche : lire le dépôt, publier sur Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Une seule publication à la fois ; une publication en cours va à son terme.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Vérifier (types, lint, tests)
+        run: npm run check
+
+      - name: Refuser un site sans configuration
+        run: |
+          if [ -z "${{ vars.VITE_SUPABASE_URL }}" ] || [ -z "${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}" ]; then
+            echo "::error::Les variables VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY ne sont pas définies (Settings > Secrets and variables > Actions > Variables)."
+            exit 1
+          fi
+
+      - name: Construire le site
+        run: npm run build
+        env:
+          # Ces deux valeurs sont publiques par nature (elles se retrouvent dans
+          # le site) : ce sont des "variables", pas des "secrets". La clé secrète
+          # de Supabase, elle, ne doit figurer nulle part ici.
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          # Le site est servi sous /nom-du-depot/. À ne définir soi-même que pour
+          # un nom de domaine personnalisé ou un dépôt "utilisateur.github.io" : "/".
+          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || format('/{0}/', github.event.repository.name) }}
+
+      - name: Préparer GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Envoyer le site construit
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Mettre en ligne
+        id: deploiement
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,110 @@
+/* Police : Barlow, dessinée d'après la signalétique routière. Elle est
+   embarquée dans l'application (aucun appel à un service externe) et sera
+   donc disponible hors ligne. */
+@import '@fontsource/barlow/latin-400.css';
+@import '@fontsource/barlow/latin-500.css';
+@import '@fontsource/barlow/latin-600.css';
+@import 'tailwindcss';
+
+/* Identité visuelle : une encre bleu nuit pour l'interface, et le jaune des
+   balises de sentier pour l'action principale. Les couleurs des types de
+   spots (vert, orange, bleu, violet) viennent de la base de données : elles
+   sont réservées aux marqueurs et ne sont pas réutilisées pour l'interface.
+
+   Chaque couleur déclarée ici devient une classe Tailwind :
+   --color-ink  ->  bg-ink, text-ink, border-ink... */
+@theme {
+  --font-sans: 'Barlow', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-ink: #067302;
+  --color-ink-soft: #6da16c;
+  --color-paper: #ffefe8;
+  --color-mist: #F5E3BF;
+  --color-line: #E6DCC8;
+  --color-blaze: #FFE000;
+  --color-blaze-deep: #E3AE00;
+  --color-ok: #00C0DE;
+  --color-danger: #c22727;
+}
+
+/* Marges de sécurité iPhone (encoche, Dynamic Island, barre du bas). */
+@utility safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+@utility safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@utility safe-x {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-mist);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    /* Safari iOS : pas de grossissement automatique du texte en paysage. */
+    -webkit-text-size-adjust: 100%;
+    /* Pas de flash gris au toucher. */
+    -webkit-tap-highlight-color: transparent;
+    /* Pas d'effet élastique sur la page entière : seuls les panneaux défilent. */
+    overscroll-behavior: none;
+  }
+
+  /* En dessous de 16 px, Safari iOS zoome dans la page quand on touche un champ. */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  /* Supprime le délai de 300 ms du double-tap. */
+  a,
+  button {
+    touch-action: manipulation;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-blaze-deep);
+    outline-offset: 2px;
+  }
+}
+
+/* --- Carte ------------------------------------------------------------ */
+
+/* Point bleu de la position de l'utilisateur. */
+.user-location-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background-color: #2f6fed;
+  border: 3px solid var(--color-paper);
+  box-shadow: 0 0 0 2px rgb(22 35 59 / 0.25);
+}
+
+/* La mention "© OpenStreetMap" reste visible : au-dessus de la barre du bas
+   de l'iPhone, et au-dessus du panneau qui recouvre le bas de la carte
+   (hauteur transmise par le composant SpotMap). */
+/* (Le sélecteur est doublé de ".maplibregl-map" pour l'emporter sur la feuille
+   de style de MapLibre, chargée après celle-ci et qui fixe "bottom: 0".) */
+.maplibregl-map .maplibregl-ctrl-bottom-left,
+.maplibregl-map .maplibregl-ctrl-bottom-right {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--map-bottom-inset, 0px));
+  transition: bottom 200ms ease-out;
+}
+.maplibregl-map .maplibregl-ctrl-bottom-left {
+  left: env(safe-area-inset-left, 0px);
+}
+
+/* La carte reprend la police de l'application. */
+.maplibregl-map {
+  font-family: var(--font-sans);
+}

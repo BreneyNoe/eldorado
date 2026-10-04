@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover : l'app occupe tout l'écran de l'iPhone, encoche comprise.
+         Les marges de sécurité sont ensuite gérées en CSS (classes safe-*). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#16233b" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Icône et comportement une fois l'application ajoutée à l'écran d'accueil de l'iPhone. -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Eldorado" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>Eldorado</title>
+    <style>
+      #boot-error {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        overflow: auto;
+        box-sizing: border-box;
+        padding: calc(env(safe-area-inset-top, 0px) + 32px) 24px 32px;
+        background: #16233b;
+        color: #ffffff;
+        font: 17px/1.45 system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+      #boot-error h1 {
+        margin: 0 0 12px;
+        font-size: 26px;
+        line-height: 1.2;
+      }
+      #boot-error pre {
+        margin: 16px 0;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.12);
+        font: 14px/1.4 ui-monospace, Menlo, Consolas, monospace;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      #boot-error button {
+        width: 100%;
+        height: 56px;
+        border: 0;
+        border-radius: 12px;
+        background: #ffc531;
+        color: #16233b;
+        font: 600 18px system-ui, -apple-system, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>JavaScript est nécessaire pour utiliser cette application.</noscript>
+
+    <!--
+      Filet de sécurité au démarrage.
+
+      Si l'application ne parvient pas à s'afficher (fichier introuvable,
+      navigateur trop ancien, erreur de programmation), ce script affiche
+      l'erreur à l'écran au lieu de laisser une page blanche. C'est le seul
+      moyen de lire une erreur sur un iPhone sans le brancher à un Mac.
+
+      Il ne s'active que tant que rien n'est affiché : une fois l'application
+      lancée, il ne fait plus rien. Écrit volontairement dans un JavaScript
+      très ancien, pour fonctionner même là où l'application ne démarre pas.
+    -->
+    <script>
+      ;(function () {
+        var root = document.getElementById('root')
+        var box = null
+
+        function appIsVisible() {
+          return !!(root && root.firstChild)
+        }
+
+        function show(title, detail) {
+          if (box || appIsVisible()) return
+          box = document.createElement('div')
+          box.id = 'boot-error'
+          box.setAttribute('role', 'alert')
+
+          var heading = document.createElement('h1')
+          heading.textContent = title
+          box.appendChild(heading)
+
+          var intro = document.createElement('p')
+          intro.textContent = "L'application n'a pas pu démarrer. Fais une capture de cet écran pour le diagnostic."
+          box.appendChild(intro)
+
+          var details = document.createElement('pre')
+          details.textContent = detail + '\n\nPage : ' + location.href + '\nNavigateur : ' + navigator.userAgent
+          box.appendChild(details)
+
+          var button = document.createElement('button')
+          button.type = 'button'
+          button.textContent = 'Recharger'
+          button.onclick = function () {
+            location.reload()
+          }
+          box.appendChild(button)
+
+          document.body.appendChild(box)
+        }
+
+        // "true" : écoute aussi les fichiers qui n'ont pas pu être chargés.
+        window.addEventListener(
+          'error',
+          function (event) {
+            var target = event.target
+            if (target && target !== window && (target.tagName === 'SCRIPT' || target.tagName === 'LINK')) {
+              show('Fichier introuvable', 'Impossible de charger : ' + (target.src || target.href))
+              return
+            }
+            var where = event.filename ? '\n' + event.filename + ' (ligne ' + event.lineno + ')' : ''
+            show('Erreur au démarrage', (event.message || 'Erreur inconnue') + where)
+          },
+          true,
+        )
+
+        window.addEventListener('unhandledrejection', function (event) {
+          var reason = event.reason
+          show('Erreur au démarrage', String((reason && (reason.stack || reason.message)) || reason))
+        })
+
+        // Rien d'affiché après 20 secondes : on le dit, plutôt que de laisser attendre.
+        setTimeout(function () {
+          show("L'application met trop de temps à démarrer", 'Aucune erreur signalée. Vérifie la connexion, puis recharge.')
+        }, 20000)
+
+        // L'application a fini par s'afficher : on retire le message.
+        if (root && window.MutationObserver) {
+          new MutationObserver(function () {
+            if (box && appIsVisible()) {
+              box.parentNode.removeChild(box)
+              box = null
+            }
+          }).observe(root, { childList: true })
+        }
+      })()
+    </script>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
