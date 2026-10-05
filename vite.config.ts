@@ -115,7 +115,8 @@ export default defineConfig(({ mode }) => {
       start_url: '.',
       scope: '.',
       display: 'standalone',
-      background_color: '#16233b',
+      // Couleur de l'écran de lancement : le vert de l'icône.
+      background_color: '#067302',
       theme_color: '#16233b',
       icons: [
         { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
