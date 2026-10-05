@@ -3,6 +3,7 @@ import { RouterProvider } from 'react-router/dom'
 import { router } from '@/app/router'
 import { UpdatePrompt } from '@/app/UpdatePrompt'
 import { OfflineBanner } from '@/components/OfflineBanner'
+import { RankCelebration } from '@/features/auth/components/RankCelebration'
 import { AuthProvider } from '@/features/auth/hooks/AuthProvider'
 import { SpotFiltersProvider } from '@/features/spots/hooks/SpotFiltersProvider'
 import { OFFLINE_MAX_AGE_MS, queryClient } from '@/lib/queryClient'
@@ -32,6 +33,7 @@ export function App() {
               <RouterProvider router={router} />
             </div>
           </div>
+          <RankCelebration />
           <UpdatePrompt />
         </SpotFiltersProvider>
       </AuthProvider>

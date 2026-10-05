@@ -202,6 +202,13 @@ export async function saveAvatarPhoto(userId: string, photo: Blob, previousPath:
   return data
 }
 
+/** Note que l'utilisateur a vu l'annonce de ce rang : elle ne lui sera plus montrée, sur aucun appareil. */
+export async function saveRankSeen(userId: string, threshold: number): Promise<Profile> {
+  const { data, error } = await supabase.from('profiles').update({ rank_seen: threshold }).eq('id', userId).select('*').single()
+  if (error) throw toAppError(error)
+  return data
+}
+
 /** Choisit la couleur de fond de l'icône ou de l'initiale (null : couleur tirée du nom). */
 export async function saveAvatarColor(userId: string, color: string | null): Promise<Profile> {
   const { data, error } = await supabase.from('profiles').update({ avatar_color: color }).eq('id', userId).select('*').single()

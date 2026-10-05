@@ -72,9 +72,9 @@ export function AvatarEditor({ profile }: AvatarEditorProps) {
     <div>
       <h2 className="mb-4 text-xl font-semibold">Photo de profil</h2>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col items-center gap-4">
         <Avatar person={profile} size="lg" />
-        <div className="min-w-0 flex-1 space-y-2">
+        <div className="w-full space-y-2">
           <input ref={fileInput} type="file" accept="image/*" hidden onChange={handleFile} data-testid="avatar-input" />
           <button
             type="button"

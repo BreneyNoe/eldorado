@@ -37,13 +37,13 @@ export function RankProgress({ profile }: RankProgressProps) {
           : 'Tu as obtenu tous les ornements.'}
       </p>
 
-      <ul aria-label="Ornements" className="mt-5 grid grid-cols-2 gap-x-4 gap-y-6">
+      <ul aria-label="Ornements" className="mt-5 space-y-3">
         {AVATAR_RANKS.map((rank) => {
           const earned = count >= rank.threshold
           return (
             <li key={rank.id} className={`flex items-center gap-4 ${earned ? '' : 'opacity-45'}`}>
-              {/* Aperçu : ton avatar, entouré de l'ornement de ce rang. */}
-              <span className="m-1.5 shrink-0">
+              {/* Aperçu : ton avatar, entouré de l'ornement de ce rang. Même largeur pour tous, pour aligner les textes. */}
+              <span className="flex w-24 shrink-0 justify-center">
                 <Avatar person={{ ...profile, spot_count: rank.threshold }} size="md" />
               </span>
               <span className="min-w-0 text-base leading-snug">

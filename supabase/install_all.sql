@@ -1,7 +1,7 @@
 -- =====================================================================
 -- INSTALLATION COMPLETE EN UN SEUL COLLER
 -- =====================================================================
--- Ce fichier est la simple concatenation des 17 fichiers du dossier
+-- Ce fichier est la simple concatenation des 18 fichiers du dossier
 -- supabase/migrations, dans l'ordre, dans UNE seule transaction :
 -- soit tout s'installe, soit rien n'est modifie.
 --
@@ -2520,5 +2520,30 @@ from (
   group by pr.id
 ) c
 where c.id = p.id and p.spot_count is distinct from c.total;
+
+-- >>>>>>>>>> 20261013100000_rank_seen.sql >>>>>>>>>>
+
+-- =====================================================================
+-- MIGRATION 18 : DERNIER RANG ANNONCE A L'UTILISATEUR
+-- =====================================================================
+-- profiles.rank_seen : seuil du dernier rang dont l'application a deja
+-- felicite l'utilisateur (0, 5, 15, 30, 50 ou 80). Tant que son rang
+-- reel le depasse, l'application lui affiche une annonce, une seule
+-- fois, quel que soit l'appareil.
+--
+-- A executer une fois dans Supabase > SQL Editor sur une base deja
+-- installee. Sans danger si on le relance.
+-- =====================================================================
+
+alter table public.profiles
+  add column if not exists rank_seen integer not null default 0;
+
+alter table public.profiles drop constraint if exists profiles_rank_seen_range;
+alter table public.profiles
+  add constraint profiles_rank_seen_range check (rank_seen between 0 and 100000);
+
+-- Chacun note pour lui-meme l'annonce qu'il a vue. Cette valeur ne donne
+-- aucun droit et ne change pas le rang, qui depend du seul compteur de spots.
+grant update (rank_seen) on public.profiles to authenticated;
 
 commit;

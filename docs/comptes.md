@@ -62,15 +62,23 @@ Un ornement entoure l'avatar de ceux qui publient des spots. Il change avec le n
 
 | Spots publiés | Rang | Ornement |
 |---|---|---|
-| 5 | Explorateur (Bronze) | Un anneau de corde |
-| 15 | Pionnier (Argent) | Un jonc d'argent serti de perles |
-| 30 | Expert (Or) | Du bois, un filigrane d'or et de l'ambre |
-| 50 | Gardien des lieux (Platine) | Un anneau sombre, une tresse d'argent et des rubis |
+| 5 | Explorateur (Bronze) | Tourbillon de bronze |
+| 15 | Pionnier (Argent) | Tourbillon d'argent |
+| 30 | Expert (Or) | Couronne d'or tressée |
+| 50 | Gardien des lieux (Platine) | Tourbillon d'argent serti de rubis |
+| 80 | Légende (Acier noir et argent) | Roue dentée au cadran romain |
 
-- L'ornement apparaît partout où l'avatar apparaît. L'écran **Mon compte** indique le rang, le nombre de spots publiés et ce qui manque pour le suivant.
+- L'ornement apparaît partout où l'avatar apparaît. L'avatar garde sa taille et l'ornement s'ajoute autour ; sur le bouton rond du compte, le tout est réduit pour tenir dans le bouton.
+- **Une annonce** félicite l'utilisateur quand il atteint un nouveau rang, y compris à l'instant où il publie le spot décisif. Elle ne s'affiche qu'une fois, quel que soit l'appareil : le dernier rang annoncé est retenu dans son profil.
+- L'écran **Mon compte** indique le rang, le nombre de spots publiés et ce qui manque pour le suivant.
 - Seuls les spots créés comptent, pas les photos ni les updates. Un spot supprimé n'est plus compté : un rang peut donc se perdre.
 - Le compte est tenu par la base, à chaque création ou suppression de spot. Personne ne peut le modifier à la main, pas même un administrateur depuis l'application.
-- Les seuils et les noms se changent dans `src/lib/avatar.ts` (`AVATAR_RANKS`), les dessins dans `src/components/AvatarOrnament.tsx`.
+
+### Changer un seuil, un nom ou un ornement
+
+- Seuils et noms : `src/lib/avatar.ts`, liste `AVATAR_RANKS`.
+- Images : `src/assets/ornaments/`, une par rang (`bronze.webp`, `silver.webp`, `gold.webp`, `platinum.webp`, `dark.webp`). Chaque image est carrée, sur fond transparent, avec un trou rond au centre pour l'avatar.
+- Taille de chaque ornement par rapport à l'avatar : `src/lib/ornaments.ts`, valeur `scale`.
 
 ## Mot de passe oublié
 

@@ -8,6 +8,7 @@ import {
   saveAvatarColor,
   saveAvatarIcon,
   saveAvatarPhoto,
+  saveRankSeen,
   signIn,
   signOut,
   signUp,
@@ -75,6 +76,15 @@ export function useSaveAvatar(userId: string, previousPath: string | null) {
       void queryClient.invalidateQueries({ queryKey: ['spots'] })
       void queryClient.invalidateQueries({ queryKey: ['admin'] })
     },
+  })
+}
+
+/** Enregistre que l'annonce d'un rang a été vue. */
+export function useAcknowledgeRank(userId: string) {
+  const queryClient = useQueryClient()
+  return useMutation<Profile, AppError, number>({
+    mutationFn: (threshold) => saveRankSeen(userId, threshold),
+    onSuccess: (profile) => queryClient.setQueryData(profileQueryKey(userId), profile),
   })
 }
 

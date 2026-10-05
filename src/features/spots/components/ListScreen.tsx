@@ -56,7 +56,7 @@ export function ListScreen() {
             trailing={
               <RoundLink to="/account" label="Mon compte">
                 {profile.avatar_path || profile.avatar_icon ? (
-                  <Avatar person={profile} size="md" />
+                  <Avatar person={profile} size="md" fit="contain" />
                 ) : (
                   <UserRound className="size-6" aria-hidden="true" />
                 )}

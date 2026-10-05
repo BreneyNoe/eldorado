@@ -23,6 +23,7 @@ export function makeProfile(overrides: Partial<Profile> = {}): Profile {
     avatar_icon: null,
     avatar_color: null,
     spot_count: 0,
+    rank_seen: 0,
     created_at: '2026-10-01T10:00:00Z',
     updated_at: '2026-10-01T10:00:00Z',
     ...overrides,

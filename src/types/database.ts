@@ -36,6 +36,8 @@ export type Database = {
           avatar_color: string | null
           /** Nombre de spots publiés, tenu à jour par la base. Donne le rang (ornement de l'avatar). */
           spot_count: number
+          /** Seuil du dernier rang déjà annoncé à l'utilisateur (0 : aucun). */
+          rank_seen: number
           created_at: string
           updated_at: string
         }
@@ -46,6 +48,7 @@ export type Database = {
           avatar_path?: string | null
           avatar_icon?: string | null
           avatar_color?: string | null
+          rank_seen?: number
           role?: UserRole
           is_active?: boolean
         }

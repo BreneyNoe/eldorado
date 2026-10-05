@@ -52,31 +52,43 @@ describe('Avatar', () => {
 
   it('pas d\'ornement avant cinq spots publiés', () => {
     const { container } = render(<Avatar person={{ display_name: 'Camille', spot_count: 4 }} />)
-    expect(container.querySelector('svg[data-rank]')).toBeNull()
+    expect(container.querySelector('[data-rank]')).toBeNull()
   })
 
-  it('un ornement par rang : 5, 15, 30 et 50 spots', () => {
-    for (const [count, rank] of [[5, 'bronze'], [15, 'silver'], [30, 'gold'], [50, 'platinum']] as const) {
+  it('un ornement par rang : 5, 15, 30, 50 et 80 spots', () => {
+    for (const [count, rank] of [[5, 'bronze'], [15, 'silver'], [30, 'gold'], [50, 'platinum'], [80, 'dark']] as const) {
       const { container } = render(<Avatar person={{ display_name: 'Camille', spot_count: count }} />)
-      expect(container.querySelector('svg[data-rank]')?.getAttribute('data-rank')).toBe(rank)
+      expect(container.querySelector('[data-rank]')?.getAttribute('data-rank')).toBe(rank)
       cleanup()
     }
   })
 
   it('l\'ornement entoure aussi une photo', () => {
     const { container } = render(<Avatar person={{ display_name: 'Camille', avatar_path: 'user-1/abc.jpg', spot_count: 30 }} />)
-    expect(container.querySelector('img')).not.toBeNull()
-    expect(container.querySelector('svg[data-rank="gold"]')).not.toBeNull()
+    expect(container.querySelector('img[src*="avatars/user-1"]')).not.toBeNull()
+    expect(container.querySelector('[data-rank="gold"]')).not.toBeNull()
   })
 
-  it('deux ornements sur la même page ont des dégradés distincts', () => {
-    const { container } = render(
-      <>
-        <Avatar person={{ display_name: 'A', spot_count: 15 }} />
-        <Avatar person={{ display_name: 'B', spot_count: 15 }} />
-      </>,
-    )
-    const ids = [...container.querySelectorAll('linearGradient, radialGradient')].map((node) => node.id)
-    expect(new Set(ids).size).toBe(ids.length)
+  it('par défaut l\'avatar garde sa taille et l\'ornement s\'ajoute autour', () => {
+    const { container } = render(<Avatar person={{ display_name: 'Camille', spot_count: 80 }} size="md" />)
+    const box = container.firstElementChild as HTMLElement
+    const face = box.firstElementChild as HTMLElement
+    expect(face.style.width).toBe('40px')
+    expect(Number.parseFloat(box.style.width)).toBeGreaterThan(80)
+  })
+
+  it('dans un emplacement fixe, le tout tient dans la taille demandée', () => {
+    const { container } = render(<Avatar person={{ display_name: 'Camille', spot_count: 80 }} size="md" fit="contain" />)
+    const box = container.firstElementChild as HTMLElement
+    const face = box.firstElementChild as HTMLElement
+    const ornament = container.querySelector('[data-rank]') as HTMLElement
+    expect(box.style.width).toBe('40px')
+    expect(Number.parseFloat(face.style.width)).toBeLessThan(20)
+    expect(Number.parseFloat(ornament.style.width)).toBeLessThanOrEqual(40)
+  })
+
+  it('sans ornement, la taille ne change pas', () => {
+    const { container } = render(<Avatar person={{ display_name: 'Camille', spot_count: 2 }} size="sm" fit="contain" />)
+    expect((container.firstElementChild as HTMLElement).style.width).toBe('28px')
   })
 })

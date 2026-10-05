@@ -59,7 +59,7 @@ export function readableOn(background: string): string {
 //
 // L'ornement qui entoure un avatar récompense le nombre de spots publiés.
 
-export type AvatarRankId = 'bronze' | 'silver' | 'gold' | 'platinum'
+export type AvatarRankId = 'bronze' | 'silver' | 'gold' | 'platinum' | 'dark'
 
 export interface AvatarRank {
   id: AvatarRankId
@@ -75,6 +75,7 @@ export const AVATAR_RANKS: readonly AvatarRank[] = [
   { id: 'silver', threshold: 15, title: 'Pionnier', metal: 'Argent' },
   { id: 'gold', threshold: 30, title: 'Expert', metal: 'Or' },
   { id: 'platinum', threshold: 50, title: 'Gardien des lieux', metal: 'Platine' },
+  { id: 'dark', threshold: 80, title: 'Légende', metal: 'Acier noir et argent' },
 ]
 
 /** Rang atteint avec ce nombre de spots publiés, ou null en dessous du premier seuil. */

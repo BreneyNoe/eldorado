@@ -83,6 +83,8 @@ export function useCreateSpot() {
   return useMutation<string, AppError, CreateSpotInput & { createdBy: string }>({
     mutationFn: (input) => createSpot(input),
     onSuccess: (spotId, input) => {
+      // Le nombre de spots publiés a changé : le profil (et donc le rang) est relu.
+      void queryClient.invalidateQueries({ queryKey: ['profile'] })
       const now = new Date().toISOString()
       queryClient.setQueryData<SpotLight[]>(spotQueryKeys.light, (current) =>
         current

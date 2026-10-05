@@ -126,7 +126,7 @@ export default defineConfig(({ mode }) => {
     },
     workbox: {
       // Tout le code de l'application est gardé sur l'appareil : elle s'ouvre sans réseau.
-      globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+      globPatterns: ['**/*.{js,css,html,svg,png,webp,woff2}'],
       maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       navigateFallback: 'index.html',
       cleanupOutdatedCaches: true,

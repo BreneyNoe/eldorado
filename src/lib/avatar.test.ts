@@ -74,12 +74,13 @@ describe('readableOn', () => {
 })
 
 describe('rangs', () => {
-  it('seuils : 5, 15, 30 et 50 spots publiés', () => {
+  it('seuils : 5, 15, 30, 50 et 80 spots publiés', () => {
     expect(AVATAR_RANKS.map((rank) => [rank.id, rank.threshold])).toEqual([
       ['bronze', 5],
       ['silver', 15],
       ['gold', 30],
       ['platinum', 50],
+      ['dark', 80],
     ])
   })
 
@@ -98,13 +99,16 @@ describe('rangs', () => {
     expect(avatarRank(30)?.title).toBe('Expert')
     expect(avatarRank(49)?.id).toBe('gold')
     expect(avatarRank(50)?.title).toBe('Gardien des lieux')
-    expect(avatarRank(4000)?.id).toBe('platinum')
+    expect(avatarRank(79)?.id).toBe('platinum')
+    expect(avatarRank(80)?.title).toBe('Légende')
+    expect(avatarRank(4000)?.id).toBe('dark')
   })
 
   it('indique le prochain rang, puis plus rien une fois le dernier atteint', () => {
     expect(nextAvatarRank(0)?.threshold).toBe(5)
     expect(nextAvatarRank(5)?.threshold).toBe(15)
     expect(nextAvatarRank(49)?.threshold).toBe(50)
-    expect(nextAvatarRank(50)).toBeNull()
+    expect(nextAvatarRank(50)?.threshold).toBe(80)
+    expect(nextAvatarRank(80)).toBeNull()
   })
 })
