@@ -5,6 +5,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   changePassword,
+  saveAvatarColor,
   saveAvatarIcon,
   saveAvatarPhoto,
   signIn,
@@ -57,16 +58,17 @@ export function useUpdateDisplayName(userId: string) {
 }
 
 /**
- * Enregistrement de l'avatar : une photo (déjà préparée) ou une icône.
+ * Enregistrement de l'avatar : une photo (déjà préparée), une icône, ou la couleur du fond.
  * Après coup, tout ce qui affiche l'avatar d'un auteur est rafraîchi.
  */
 export function useSaveAvatar(userId: string, previousPath: string | null) {
   const queryClient = useQueryClient()
-  return useMutation<Profile, AppError, { photo: Blob } | { icon: string | null }>({
-    mutationFn: (choice) =>
-      'photo' in choice
-        ? saveAvatarPhoto(userId, choice.photo, previousPath)
-        : saveAvatarIcon(userId, choice.icon, previousPath),
+  return useMutation<Profile, AppError, { photo: Blob } | { icon: string | null } | { color: string | null }>({
+    mutationFn: (choice) => {
+      if ('photo' in choice) return saveAvatarPhoto(userId, choice.photo, previousPath)
+      if ('color' in choice) return saveAvatarColor(userId, choice.color)
+      return saveAvatarIcon(userId, choice.icon, previousPath)
+    },
     onSuccess: (profile) => {
       queryClient.setQueryData(profileQueryKey(userId), profile)
       // Fiches, journaux et listes où cet utilisateur apparaît comme auteur.

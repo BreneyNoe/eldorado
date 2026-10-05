@@ -6,6 +6,7 @@ import { AVATAR_SETTINGS } from '@/config/constants'
 import { useSaveAvatar } from '@/features/auth/hooks/useAuthActions'
 import { compressImage } from '@/features/photos/processing/compressImage'
 import { SpotIcon } from '@/features/spots/components/SpotIcon'
+import { AVATAR_COLOR_CHOICES } from '@/lib/avatar'
 import { toAppError } from '@/lib/errors'
 import type { Profile } from '@/types/models'
 
@@ -31,7 +32,7 @@ interface AvatarEditorProps {
 
 /**
  * Choix de l'avatar : une photo, recadrée en carré et allégée sur
- * l'appareil avant l'envoi, ou une icône. Sans l'une ni l'autre, c'est
+ * l'appareil avant l'envoi, ou une icône sur un fond de la couleur voulue. Sans l'une ni l'autre, c'est
  * l'initiale du nom qui s'affiche.
  */
 export function AvatarEditor({ profile }: AvatarEditorProps) {
@@ -122,6 +123,40 @@ export function AvatarEditor({ profile }: AvatarEditorProps) {
           )
         })}
       </div>
+
+      <p className="mt-5 text-base font-medium">Couleur du fond</p>
+      <div role="group" aria-label="Couleur du fond" className="mt-2 grid grid-cols-7 gap-2">
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => save.mutate({ color: null })}
+          aria-label="Couleur automatique"
+          aria-pressed={!profile.avatar_color}
+          className={`flex aspect-square items-center justify-center rounded-full border-2 text-sm font-semibold disabled:opacity-60 ${
+            profile.avatar_color ? 'border-line bg-paper text-ink-soft' : 'border-ink bg-mist text-ink'
+          }`}
+        >
+          Auto
+        </button>
+        {AVATAR_COLOR_CHOICES.map((color) => {
+          const selected = profile.avatar_color?.toLowerCase() === color.toLowerCase()
+          return (
+            <button
+              key={color}
+              type="button"
+              disabled={busy}
+              onClick={() => save.mutate({ color })}
+              aria-label={`Couleur ${color}`}
+              aria-pressed={selected}
+              className={`aspect-square rounded-full border-2 disabled:opacity-60 ${selected ? 'border-ink ring-2 ring-ink ring-offset-2' : 'border-line'}`}
+              style={{ backgroundColor: color }}
+            />
+          )
+        })}
+      </div>
+      {profile.avatar_path && (
+        <p className="mt-2 text-base text-ink-soft">La couleur s'affiche derrière l'icône ou l'initiale, pas derrière une photo.</p>
+      )}
 
       {(problem || save.error) && (
         <div className="mt-3">

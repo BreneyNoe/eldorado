@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { AVATAR_COLORS, avatarColor, avatarInitial } from '@/lib/avatar'
+import {
+  AVATAR_COLOR_CHOICES,
+  AVATAR_COLORS,
+  AVATAR_RANKS,
+  avatarBackground,
+  avatarColor,
+  avatarInitial,
+  avatarRank,
+  nextAvatarRank,
+  readableOn,
+} from '@/lib/avatar'
 
 describe('avatarColor', () => {
   it('donne toujours la même couleur au même nom', () => {
@@ -32,5 +42,69 @@ describe('avatarInitial', () => {
   it('donne "?" quand il n\'y a pas de nom', () => {
     expect(avatarInitial('')).toBe('?')
     expect(avatarInitial(null)).toBe('?')
+  })
+})
+
+describe('avatarBackground', () => {
+  it('prend la couleur choisie par la personne', () => {
+    expect(avatarBackground({ display_name: 'Camille', avatar_color: '#0C8599' })).toBe('#0C8599')
+  })
+
+  it('sinon, celle tirée de son nom', () => {
+    expect(avatarBackground({ display_name: 'Camille', avatar_color: null })).toBe(avatarColor('Camille'))
+    expect(avatarBackground(null)).toBe(avatarColor(''))
+  })
+
+  it('ignore une valeur qui n\'est pas une couleur', () => {
+    expect(avatarBackground({ display_name: 'Camille', avatar_color: 'url(javascript:1)' })).toBe(avatarColor('Camille'))
+  })
+})
+
+describe('readableOn', () => {
+  it('dessin sombre sur fond clair, blanc sur fond foncé', () => {
+    expect(readableOn('#FFE000')).toBe('#16233b')
+    expect(readableOn('#ffffff')).toBe('#16233b')
+    expect(readableOn('#067302')).toBe('#ffffff')
+    expect(readableOn('#16233B')).toBe('#ffffff')
+  })
+
+  it('reste lisible sur chacune des couleurs proposées', () => {
+    for (const color of AVATAR_COLOR_CHOICES) expect(['#ffffff', '#16233b']).toContain(readableOn(color))
+  })
+})
+
+describe('rangs', () => {
+  it('seuils : 5, 15, 30 et 50 spots publiés', () => {
+    expect(AVATAR_RANKS.map((rank) => [rank.id, rank.threshold])).toEqual([
+      ['bronze', 5],
+      ['silver', 15],
+      ['gold', 30],
+      ['platinum', 50],
+    ])
+  })
+
+  it('aucun ornement avant le cinquième spot', () => {
+    expect(avatarRank(0)).toBeNull()
+    expect(avatarRank(4)).toBeNull()
+    expect(avatarRank(null)).toBeNull()
+    expect(avatarRank(undefined)).toBeNull()
+  })
+
+  it('chaque seuil donne son rang, et le garde jusqu\'au suivant', () => {
+    expect(avatarRank(5)?.title).toBe('Explorateur')
+    expect(avatarRank(14)?.id).toBe('bronze')
+    expect(avatarRank(15)?.title).toBe('Pionnier')
+    expect(avatarRank(29)?.id).toBe('silver')
+    expect(avatarRank(30)?.title).toBe('Expert')
+    expect(avatarRank(49)?.id).toBe('gold')
+    expect(avatarRank(50)?.title).toBe('Gardien des lieux')
+    expect(avatarRank(4000)?.id).toBe('platinum')
+  })
+
+  it('indique le prochain rang, puis plus rien une fois le dernier atteint', () => {
+    expect(nextAvatarRank(0)?.threshold).toBe(5)
+    expect(nextAvatarRank(5)?.threshold).toBe(15)
+    expect(nextAvatarRank(49)?.threshold).toBe(50)
+    expect(nextAvatarRank(50)).toBeNull()
   })
 })

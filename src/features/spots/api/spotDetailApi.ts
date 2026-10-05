@@ -25,7 +25,7 @@ export async function fetchSpot(spotId: string): Promise<SpotDetail | null> {
   const { data, error } = await supabase
     .from('spots')
     .select(
-      'id, spot_type_id, name, description, lat, lng, address, address_source, visited_on, created_by, cover_photo_id, subtype_id, created_at, updated_at, creator:profiles(display_name, avatar_path, avatar_icon), extra_types:spot_extra_types(spot_type_id)',
+      'id, spot_type_id, name, description, lat, lng, address, address_source, visited_on, created_by, cover_photo_id, subtype_id, created_at, updated_at, creator:profiles(display_name, avatar_path, avatar_icon, avatar_color, spot_count), extra_types:spot_extra_types(spot_type_id)',
     )
     .eq('id', spotId)
     .maybeSingle()
@@ -38,7 +38,7 @@ export async function fetchSpotPhotos(spotId: string): Promise<SpotPhotoWithAuth
   const { data, error } = await supabase
     .from('spot_photos')
     .select(
-      'id, spot_id, uploaded_by, path_standard, path_thumb, width, height, size_bytes, taken_at, created_at, uploader:profiles(display_name, avatar_path, avatar_icon)',
+      'id, spot_id, uploaded_by, path_standard, path_thumb, width, height, size_bytes, taken_at, created_at, uploader:profiles(display_name, avatar_path, avatar_icon, avatar_color, spot_count)',
     )
     .eq('spot_id', spotId)
     .order('created_at')

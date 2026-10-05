@@ -36,8 +36,10 @@ export async function updateUser(userId: string, changes: { role?: UserRole; is_
 }
 
 /** Avatars de tous les comptes : la liste des utilisateurs ne les donne pas. */
-export async function fetchUserAvatars(): Promise<{ id: string; avatar_path: string | null; avatar_icon: string | null }[]> {
-  const { data, error } = await supabase.from('profiles').select('id, avatar_path, avatar_icon')
+export async function fetchUserAvatars(): Promise<
+  { id: string; avatar_path: string | null; avatar_icon: string | null; avatar_color: string | null; spot_count: number }[]
+> {
+  const { data, error } = await supabase.from('profiles').select('id, avatar_path, avatar_icon, avatar_color, spot_count')
   if (error) throw toAppError(error)
   return data
 }

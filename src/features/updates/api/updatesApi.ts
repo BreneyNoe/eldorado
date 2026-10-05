@@ -12,7 +12,7 @@ export interface SpotUpdateWithAuthor extends SpotUpdate {
   author: AvatarPerson | null
 }
 
-const UPDATE_COLUMNS = 'id, spot_id, author_id, body, created_at, updated_at, author:profiles(display_name, avatar_path, avatar_icon)'
+const UPDATE_COLUMNS = 'id, spot_id, author_id, body, created_at, updated_at, author:profiles(display_name, avatar_path, avatar_icon, avatar_color, spot_count)'
 
 /**
  * Une page du journal, du plus récent au plus ancien.

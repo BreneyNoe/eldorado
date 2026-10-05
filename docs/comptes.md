@@ -52,6 +52,26 @@ Les photos de profil sont dans un bucket à part, `avatars`. Chacun n'écrit que
 
 Un administrateur peut retirer l'avatar d'un compte : **Administration → Utilisateurs → Retirer l'avatar**.
 
+### Couleur du fond
+
+Sous les icônes, une palette permet de choisir la couleur du disque derrière l'icône ou l'initiale. « Auto » revient à la couleur tirée du nom. Sur une couleur claire, le dessin passe automatiquement en sombre pour rester lisible. La couleur ne s'affiche pas derrière une photo.
+
+## Rangs et ornements
+
+Un ornement entoure l'avatar de ceux qui publient des spots. Il change avec le nombre de spots publiés :
+
+| Spots publiés | Rang | Ornement |
+|---|---|---|
+| 5 | Explorateur (Bronze) | Un anneau de corde |
+| 15 | Pionnier (Argent) | Un jonc d'argent serti de perles |
+| 30 | Expert (Or) | Du bois, un filigrane d'or et de l'ambre |
+| 50 | Gardien des lieux (Platine) | Un anneau sombre, une tresse d'argent et des rubis |
+
+- L'ornement apparaît partout où l'avatar apparaît. L'écran **Mon compte** indique le rang, le nombre de spots publiés et ce qui manque pour le suivant.
+- Seuls les spots créés comptent, pas les photos ni les updates. Un spot supprimé n'est plus compté : un rang peut donc se perdre.
+- Le compte est tenu par la base, à chaque création ou suppression de spot. Personne ne peut le modifier à la main, pas même un administrateur depuis l'application.
+- Les seuils et les noms se changent dans `src/lib/avatar.ts` (`AVATAR_RANKS`), les dessins dans `src/components/AvatarOrnament.tsx`.
+
 ## Mot de passe oublié
 
 Ouvrir `supabase/admin/reset_password.sql`, y mettre l'email et un mot de passe provisoire, l'exécuter dans le **SQL Editor**, puis transmettre ce mot de passe à la personne.

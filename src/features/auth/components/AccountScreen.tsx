@@ -6,6 +6,7 @@ import { SheetLayout } from '@/components/SheetLayout'
 import { PasswordField, TextField } from '@/components/TextField'
 import { PASSWORD_MIN_LENGTH, TEXT_LIMITS } from '@/config/constants'
 import { AvatarEditor } from '@/features/auth/components/AvatarEditor'
+import { RankProgress } from '@/features/auth/components/RankProgress'
 import { useCurrentUser } from '@/features/auth/hooks/AuthContext'
 import { useChangePassword, useSignOut, useUpdateDisplayName } from '@/features/auth/hooks/useAuthActions'
 import {
@@ -144,6 +145,10 @@ export function AccountScreen() {
 
       <section className="mt-8 border-t border-line pt-8">
         <AvatarEditor profile={profile} />
+      </section>
+
+      <section className="mt-8 border-t border-line pt-8">
+        <RankProgress profile={profile} />
       </section>
 
       <section className="mt-8 border-t border-line pt-8">

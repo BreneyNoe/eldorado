@@ -32,6 +32,10 @@ export type Database = {
           avatar_path: string | null
           /** Icône de profil, utilisée quand il n'y a pas de photo. */
           avatar_icon: string | null
+          /** Couleur de fond choisie pour l'icône ou l'initiale (#RRGGBB). */
+          avatar_color: string | null
+          /** Nombre de spots publiés, tenu à jour par la base. Donne le rang (ornement de l'avatar). */
+          spot_count: number
           created_at: string
           updated_at: string
         }
@@ -41,6 +45,7 @@ export type Database = {
           display_name?: string
           avatar_path?: string | null
           avatar_icon?: string | null
+          avatar_color?: string | null
           role?: UserRole
           is_active?: boolean
         }

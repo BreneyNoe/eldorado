@@ -202,6 +202,13 @@ export async function saveAvatarPhoto(userId: string, photo: Blob, previousPath:
   return data
 }
 
+/** Choisit la couleur de fond de l'icône ou de l'initiale (null : couleur tirée du nom). */
+export async function saveAvatarColor(userId: string, color: string | null): Promise<Profile> {
+  const { data, error } = await supabase.from('profiles').update({ avatar_color: color }).eq('id', userId).select('*').single()
+  if (error) throw toAppError(error)
+  return data
+}
+
 /** Choisit une icône de profil (ou aucune, avec null). La photo éventuelle est supprimée. */
 export async function saveAvatarIcon(userId: string, icon: string | null, previousPath: string | null): Promise<Profile> {
   const { data, error } = await supabase
