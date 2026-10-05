@@ -11,6 +11,7 @@
 | Code malveillant glissé dans un texte (nom, description, update) | Les textes sont toujours affichés comme du texte, jamais comme du HTML | tous les écrans |
 | Même risque, seconde ligne de défense | Politique de sécurité du contenu : le navigateur n'exécute que les scripts de l'application | `vite.config.ts` |
 | Envoi d'un fichier dangereux | Le bucket n'accepte que des JPEG de 2 Mo au plus, à un chemin imposé | migration 5 |
+| Photo de profil déplacée, ou profil pointant vers la photo d'un autre | Chacun n'écrit que dans son dossier du bucket `avatars` ; le chemin enregistré doit commencer par son propre identifiant ; un admin peut retirer un avatar | migration 16 |
 | Spot noyé sous les photos | 10 photos par spot, limite appliquée par la base | migration 11 |
 | Données d'un utilisateur lues par le suivant sur le même téléphone | La déconnexion efface ce que l'application gardait sur l'appareil | `src/lib/queryPersister.ts` |
 | Fuite de la position des photos | Les fichiers envoyés sont redessinés : ils ne contiennent plus de position | `docs/photos.md` |

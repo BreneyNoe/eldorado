@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { Avatar } from '@/components/Avatar'
 import { Button } from '@/components/Button'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Notice } from '@/components/Notice'
@@ -103,14 +104,17 @@ export function UpdatesSection({ spotId, viewer }: UpdatesSectionProps) {
 
               return (
                 <li key={update.id} className="py-4">
-                  <p className="text-base">
-                    <span className="font-semibold">{formatInstantDateTime(update.created_at)}</span>
-                    <span className="text-ink-soft">
-                      {' · '}
-                      {update.author?.display_name ?? 'utilisateur supprimé'}
-                      {wasEdited(update) && ' · modifié'}
-                    </span>
-                  </p>
+                  <div className="flex items-center gap-2.5">
+                    <Avatar person={update.author} size="sm" />
+                    <p className="min-w-0 text-base">
+                      <span className="font-semibold">{formatInstantDateTime(update.created_at)}</span>
+                      <span className="text-ink-soft">
+                        {' · '}
+                        {update.author?.display_name ?? 'utilisateur supprimé'}
+                        {wasEdited(update) && ' · modifié'}
+                      </span>
+                    </p>
+                  </div>
 
                   {isEditing ? (
                     <div className="mt-2 space-y-3">

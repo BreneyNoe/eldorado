@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { Avatar } from '@/components/Avatar'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Notice } from '@/components/Notice'
-import { useUpdateUser, useUsers } from '@/features/admin/hooks/useAdmin'
+import { useRemoveUserAvatar, useUpdateUser, useUserAvatars, useUsers } from '@/features/admin/hooks/useAdmin'
 import { useCurrentUser } from '@/features/auth/hooks/AuthContext'
 import { formatInstantDay } from '@/lib/formatDate'
 import type { UserRole } from '@/types/database'
@@ -22,6 +23,9 @@ export function AdminUsers() {
   const { session } = useCurrentUser()
   const users = useUsers()
   const updateUser = useUpdateUser()
+  const avatars = useUserAvatars()
+  const removeAvatar = useRemoveUserAvatar()
+  const avatarsById = new Map((avatars.data ?? []).map((entry) => [entry.id, entry]))
   const [pending, setPending] = useState<PendingChange | null>(null)
 
   const ask = (change: PendingChange) => {
@@ -41,18 +45,29 @@ export function AdminUsers() {
         {users.data.length} {users.data.length > 1 ? 'comptes' : 'compte'}
       </h2>
 
+      {removeAvatar.error && (
+        <div className="mt-3">
+          <Notice tone="error">{removeAvatar.error.message}</Notice>
+        </div>
+      )}
+
       <ul className="mt-3 divide-y divide-line border-y border-line">
         {sortedUsers.map((user) => {
           const isMe = user.id === session.userId
           const isAdmin = user.role === 'admin'
           const lastSeen = formatInstantDay(user.last_sign_in_at)
           const joined = formatInstantDay(user.created_at)
+          const avatar = avatarsById.get(user.id)
+          const hasAvatar = Boolean(avatar?.avatar_path || avatar?.avatar_icon)
           return (
             <li key={user.id} className="py-4">
-              <p className="text-lg font-semibold">
-                {user.display_name}
-                {isMe && <span className="font-normal text-ink-soft"> (toi)</span>}
-              </p>
+              <div className="flex items-center gap-3">
+                <Avatar person={{ display_name: user.display_name, ...avatar }} />
+                <p className="min-w-0 text-lg font-semibold">
+                  {user.display_name}
+                  {isMe && <span className="font-normal text-ink-soft"> (toi)</span>}
+                </p>
+              </div>
               <p className="text-base break-all text-ink-soft">{user.email}</p>
               <p className="mt-1 text-base">
                 {isAdmin ? 'Administrateur' : 'Membre'}
@@ -101,6 +116,16 @@ export function AdminUsers() {
                 >
                   {user.is_active ? 'Bannir' : 'Rétablir'}
                 </button>
+                {hasAvatar && !isMe && (
+                  <button
+                    type="button"
+                    className={ACTION}
+                    disabled={removeAvatar.isPending}
+                    onClick={() => removeAvatar.mutate({ userId: user.id, avatarPath: avatar?.avatar_path ?? null })}
+                  >
+                    Retirer l'avatar
+                  </button>
+                )}
               </div>
             </li>
           )

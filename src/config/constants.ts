@@ -47,5 +47,12 @@ export const RATING_SCALE = { min: 0.5, max: 5, step: 0.5 } as const
 /** Longueur minimale exigée par l'application pour un nouveau mot de passe. */
 export const PASSWORD_MIN_LENGTH = 8
 
+/** Photos de profil : leur propre bucket, des carrés de 256 px. */
+export const AVATAR_SETTINGS = {
+  bucket: 'avatars',
+  size: 256,
+  quality: 0.85,
+} as const
+
 /** Mention légale affichée sur la vue satellite (photos aériennes de l'IGN). */
 export const SATELLITE_ATTRIBUTION = '© IGN'

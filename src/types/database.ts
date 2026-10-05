@@ -28,6 +28,10 @@ export type Database = {
           display_name: string
           role: UserRole
           is_active: boolean
+          /** Photo de profil : chemin dans le bucket "avatars". */
+          avatar_path: string | null
+          /** Icône de profil, utilisée quand il n'y a pas de photo. */
+          avatar_icon: string | null
           created_at: string
           updated_at: string
         }
@@ -35,6 +39,8 @@ export type Database = {
         Insert: Record<string, never>
         Update: {
           display_name?: string
+          avatar_path?: string | null
+          avatar_icon?: string | null
           role?: UserRole
           is_active?: boolean
         }

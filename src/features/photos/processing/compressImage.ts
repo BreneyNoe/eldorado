@@ -38,7 +38,15 @@ function exportJpeg(canvas: HTMLCanvasElement, quality: number): Promise<Blob | 
  * @param maxEdge  plus grand côté du résultat, en pixels
  * @param quality  qualité JPEG de départ, entre 0 et 1
  */
-export async function compressImage(file: Blob, maxEdge: number, quality: number): Promise<CompressedImage> {
+/**
+ * @param options.square  recadre l'image en carré, autour de son centre (photo de profil)
+ */
+export async function compressImage(
+  file: Blob,
+  maxEdge: number,
+  quality: number,
+  options: { square?: boolean } = {},
+): Promise<CompressedImage> {
   const url = URL.createObjectURL(file)
   try {
     let image: HTMLImageElement
@@ -54,7 +62,12 @@ export async function compressImage(file: Blob, maxEdge: number, quality: number
 
     // naturalWidth / naturalHeight tiennent déjà compte de l'orientation
     // enregistrée dans la photo : une photo prise à la verticale reste verticale.
-    const { width, height } = fitWithin(image.naturalWidth, image.naturalHeight, maxEdge)
+    // Zone de l'image d'origine à conserver : tout, ou le plus grand carré centré.
+    const side = Math.min(image.naturalWidth, image.naturalHeight)
+    const source = options.square
+      ? { x: (image.naturalWidth - side) / 2, y: (image.naturalHeight - side) / 2, width: side, height: side }
+      : { x: 0, y: 0, width: image.naturalWidth, height: image.naturalHeight }
+    const { width, height } = fitWithin(source.width, source.height, maxEdge)
     if (width === 0 || height === 0) {
       throw new AppError('validation', 'Cette image est vide.', { code: 'APP_IMAGE_UNREADABLE' })
     }
@@ -70,7 +83,7 @@ export async function compressImage(file: Blob, maxEdge: number, quality: number
     context.fillRect(0, 0, width, height)
     context.imageSmoothingEnabled = true
     context.imageSmoothingQuality = 'high'
-    context.drawImage(image, 0, 0, width, height)
+    context.drawImage(image, source.x, source.y, source.width, source.height, 0, 0, width, height)
 
     try {
       let currentQuality = quality

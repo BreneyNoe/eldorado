@@ -38,6 +38,20 @@ Dans **Authentication → Sign In / Providers** :
 
 Le profil est créé automatiquement, avec le début de l'email comme nom affiché. La personne le modifie dans **Mon compte**.
 
+## Photo ou icône de profil
+
+Dans **Mon compte**, chacun peut choisir :
+
+- **une photo** : elle est recadrée en carré et allégée sur l'appareil avant l'envoi (256 px, quelques dizaines de Ko) ;
+- **une icône**, parmi une douzaine ;
+- **rien** : c'est alors l'initiale du nom qui s'affiche, sur une couleur qui dépend du nom.
+
+L'avatar apparaît à côté du nom de la personne : sur les fiches qu'elle a créées, dans le journal, sous les photos qu'elle a ajoutées, et sur le bouton du compte.
+
+Les photos de profil sont dans un bucket à part, `avatars`. Chacun n'écrit que dans son propre dossier, et la base refuse qu'un profil pointe vers la photo d'un autre. Changer de photo supprime l'ancienne.
+
+Un administrateur peut retirer l'avatar d'un compte : **Administration → Utilisateurs → Retirer l'avatar**.
+
 ## Mot de passe oublié
 
 Ouvrir `supabase/admin/reset_password.sql`, y mettre l'email et un mot de passe provisoire, l'exécuter dans le **SQL Editor**, puis transmettre ce mot de passe à la personne.

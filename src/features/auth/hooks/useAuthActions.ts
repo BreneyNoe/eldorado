@@ -3,7 +3,15 @@
  * isPending (chargement), error (AppError) et isSuccess.
  */
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { changePassword, signIn, signOut, signUp, updateDisplayName } from '@/features/auth/api/authApi'
+import {
+  changePassword,
+  saveAvatarIcon,
+  saveAvatarPhoto,
+  signIn,
+  signOut,
+  signUp,
+  updateDisplayName,
+} from '@/features/auth/api/authApi'
 import { useAuth } from '@/features/auth/hooks/AuthContext'
 import { profileQueryKey } from '@/features/auth/hooks/queryKeys'
 import { normalizeEmail } from '@/features/auth/logic/validation'
@@ -45,6 +53,26 @@ export function useUpdateDisplayName(userId: string) {
   return useMutation<Profile, AppError, string>({
     mutationFn: (displayName) => updateDisplayName(userId, displayName),
     onSuccess: (profile) => queryClient.setQueryData(profileQueryKey(userId), profile),
+  })
+}
+
+/**
+ * Enregistrement de l'avatar : une photo (déjà préparée) ou une icône.
+ * Après coup, tout ce qui affiche l'avatar d'un auteur est rafraîchi.
+ */
+export function useSaveAvatar(userId: string, previousPath: string | null) {
+  const queryClient = useQueryClient()
+  return useMutation<Profile, AppError, { photo: Blob } | { icon: string | null }>({
+    mutationFn: (choice) =>
+      'photo' in choice
+        ? saveAvatarPhoto(userId, choice.photo, previousPath)
+        : saveAvatarIcon(userId, choice.icon, previousPath),
+    onSuccess: (profile) => {
+      queryClient.setQueryData(profileQueryKey(userId), profile)
+      // Fiches, journaux et listes où cet utilisateur apparaît comme auteur.
+      void queryClient.invalidateQueries({ queryKey: ['spots'] })
+      void queryClient.invalidateQueries({ queryKey: ['admin'] })
+    },
   })
 }
 

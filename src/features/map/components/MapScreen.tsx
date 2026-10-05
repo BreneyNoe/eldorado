@@ -1,3 +1,5 @@
+import { Avatar } from '@/components/Avatar'
+import { useCurrentUser } from '@/features/auth/hooks/AuthContext'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Layers, List, LoaderCircle, LocateFixed, Plus, UserRound } from 'lucide-react'
 import { useSearchParams } from 'react-router'
@@ -34,6 +36,7 @@ function plural(count: number, singular: string, pluralForm: string): string {
 }
 
 export function MapScreen() {
+  const { profile } = useCurrentUser()
   const mapRef = useRef<SpotMapHandle>(null)
   const { filters } = useSpotFilters()
   const { spots, totalCount, types, typesById, subtypes, subtypesById, isPending, isWaitingForNetwork, error, refetch } =
@@ -239,7 +242,11 @@ export function MapScreen() {
             floating
             trailing={
               <RoundLink to="/account" label="Mon compte">
-                <UserRound className="size-6" aria-hidden="true" />
+                {profile.avatar_path || profile.avatar_icon ? (
+                  <Avatar person={profile} size="md" />
+                ) : (
+                  <UserRound className="size-6" aria-hidden="true" />
+                )}
               </RoundLink>
             }
           />

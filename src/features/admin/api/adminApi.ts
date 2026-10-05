@@ -8,7 +8,7 @@
  *
  * Toutes les fonctions lèvent une AppError en cas d'échec.
  */
-import { STORAGE_BUCKET } from '@/config/constants'
+import { AVATAR_SETTINGS, STORAGE_BUCKET } from '@/config/constants'
 import { toAppError } from '@/lib/errors'
 import { supabase } from '@/lib/supabase'
 import type { Database, Json, UserRole } from '@/types/database'
@@ -33,6 +33,31 @@ export async function updateUser(userId: string, changes: { role?: UserRole; is_
   const { data, error } = await supabase.from('profiles').update(changes).eq('id', userId).select('id')
   if (error) throw toAppError(error)
   if (data.length === 0) refused()
+}
+
+/** Avatars de tous les comptes : la liste des utilisateurs ne les donne pas. */
+export async function fetchUserAvatars(): Promise<{ id: string; avatar_path: string | null; avatar_icon: string | null }[]> {
+  const { data, error } = await supabase.from('profiles').select('id, avatar_path, avatar_icon')
+  if (error) throw toAppError(error)
+  return data
+}
+
+/** Retire l'avatar d'un compte (photo déplacée, par exemple). Son fichier est supprimé du stockage. */
+export async function removeUserAvatar(userId: string, avatarPath: string | null): Promise<void> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ avatar_path: null, avatar_icon: null })
+    .eq('id', userId)
+    .select('id')
+  if (error) throw toAppError(error)
+  if (data.length === 0) refused()
+  if (avatarPath) {
+    try {
+      await supabase.storage.from(AVATAR_SETTINGS.bucket).remove([avatarPath])
+    } catch {
+      // Un fichier resté seul ne gêne rien.
+    }
+  }
 }
 
 // --- Modération ----------------------------------------------------------------

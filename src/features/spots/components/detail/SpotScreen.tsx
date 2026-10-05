@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Icon } from '@iconify/react'
-import { ArrowLeft, CalendarDays, Copy, Map as MapIcon, MapPin, Pencil, UserRound } from 'lucide-react'
+import { ArrowLeft, CalendarDays, Copy, Map as MapIcon, MapPin, Pencil } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router'
+import { Avatar } from '@/components/Avatar'
 import { Button } from '@/components/Button'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { FullScreenLoader } from '@/components/FullScreenLoader'
@@ -187,8 +188,8 @@ export function SpotScreen() {
                   <span>Visité le {visitedOn}</span>
                 </li>
               )}
-              <li className="flex items-start gap-3 text-ink-soft">
-                <UserRound className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+              <li className="flex items-center gap-2.5 text-ink-soft">
+                <Avatar person={spot.creator} size="sm" />
                 <span>
                   Ajouté par {spot.creator?.display_name ?? 'un utilisateur supprimé'}
                   {createdOn && ` le ${createdOn}`}

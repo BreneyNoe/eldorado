@@ -2,6 +2,8 @@
  * Accès Supabase pour l'authentification et le profil.
  * Toutes les fonctions lèvent une AppError en cas d'échec.
  */
+import { AVATAR_SETTINGS } from '@/config/constants'
+import { createUuid } from '@/lib/uuid'
 import { AppError, toAppError } from '@/lib/errors'
 import { supabase } from '@/lib/supabase'
 import type { AuthSession } from '@/features/auth/logic/authState'
@@ -161,6 +163,55 @@ export async function updateDisplayName(userId: string, displayName: string): Pr
     .select('*')
     .single()
   if (error) throw toAppError(error)
+  return data
+}
+
+/** Retire un fichier du bucket des photos de profil, sans jamais lever : un fichier resté seul ne gêne rien. */
+async function removeAvatarFile(path: string | null | undefined): Promise<void> {
+  if (!path) return
+  try {
+    await supabase.storage.from(AVATAR_SETTINGS.bucket).remove([path])
+  } catch {
+    // Volontairement ignoré.
+  }
+}
+
+/**
+ * Enregistre une photo de profil déjà recadrée et compressée.
+ * L'ancienne photo, s'il y en avait une, est supprimée du stockage.
+ */
+export async function saveAvatarPhoto(userId: string, photo: Blob, previousPath: string | null): Promise<Profile> {
+  // Le chemin commence par l'id de l'utilisateur : la base refuse tout autre dossier.
+  const path = `${userId}/${createUuid()}.jpg`
+  const { error: uploadError } = await supabase.storage
+    .from(AVATAR_SETTINGS.bucket)
+    .upload(path, photo, { contentType: 'image/jpeg', cacheControl: '31536000', upsert: false })
+  if (uploadError) throw toAppError(uploadError)
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ avatar_path: path, avatar_icon: null })
+    .eq('id', userId)
+    .select('*')
+    .single()
+  if (error) {
+    await removeAvatarFile(path)
+    throw toAppError(error)
+  }
+  await removeAvatarFile(previousPath)
+  return data
+}
+
+/** Choisit une icône de profil (ou aucune, avec null). La photo éventuelle est supprimée. */
+export async function saveAvatarIcon(userId: string, icon: string | null, previousPath: string | null): Promise<Profile> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ avatar_icon: icon, avatar_path: null })
+    .eq('id', userId)
+    .select('*')
+    .single()
+  if (error) throw toAppError(error)
+  await removeAvatarFile(previousPath)
   return data
 }
 

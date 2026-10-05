@@ -2,16 +2,17 @@
  * Journal d'updates d'un spot.
  * Toutes les fonctions lèvent une AppError en cas d'échec.
  */
+import type { AvatarPerson } from '@/components/Avatar'
 import { toAppError } from '@/lib/errors'
 import { supabase } from '@/lib/supabase'
 import type { SpotUpdate } from '@/types/models'
 
 /** Un update, avec le nom affiché de son auteur (null si le compte a été supprimé). */
 export interface SpotUpdateWithAuthor extends SpotUpdate {
-  author: { display_name: string } | null
+  author: AvatarPerson | null
 }
 
-const UPDATE_COLUMNS = 'id, spot_id, author_id, body, created_at, updated_at, author:profiles(display_name)'
+const UPDATE_COLUMNS = 'id, spot_id, author_id, body, created_at, updated_at, author:profiles(display_name, avatar_path, avatar_icon)'
 
 /**
  * Une page du journal, du plus récent au plus ancien.

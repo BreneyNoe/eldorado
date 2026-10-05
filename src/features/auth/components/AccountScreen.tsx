@@ -5,6 +5,7 @@ import { Notice } from '@/components/Notice'
 import { SheetLayout } from '@/components/SheetLayout'
 import { PasswordField, TextField } from '@/components/TextField'
 import { PASSWORD_MIN_LENGTH, TEXT_LIMITS } from '@/config/constants'
+import { AvatarEditor } from '@/features/auth/components/AvatarEditor'
 import { useCurrentUser } from '@/features/auth/hooks/AuthContext'
 import { useChangePassword, useSignOut, useUpdateDisplayName } from '@/features/auth/hooks/useAuthActions'
 import {
@@ -140,6 +141,10 @@ export function AccountScreen() {
     <SheetLayout title="Mon compte" back={{ to: '/', label: 'Retour' }}>
       <p className="text-lg font-medium break-all">{session.email}</p>
       <p className="mt-1 text-base text-ink-soft">{isAdmin ? 'Administrateur' : 'Membre'}</p>
+
+      <section className="mt-8 border-t border-line pt-8">
+        <AvatarEditor profile={profile} />
+      </section>
 
       <section className="mt-8 border-t border-line pt-8">
         <DisplayNameForm userId={session.userId} currentName={profile.display_name} />

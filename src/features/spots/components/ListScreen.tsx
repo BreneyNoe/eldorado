@@ -1,3 +1,5 @@
+import { Avatar } from '@/components/Avatar'
+import { useCurrentUser } from '@/features/auth/hooks/AuthContext'
 import { useMemo, useState } from 'react'
 import { Map as MapIcon, UserRound } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
@@ -21,6 +23,7 @@ const SORT_OPTIONS: { mode: SpotSortMode; label: string }[] = [
  * carte : passer de l'une à l'autre conserve la recherche et les types.
  */
 export function ListScreen() {
+  const { profile } = useCurrentUser()
   const navigate = useNavigate()
   const { filters } = useSpotFilters()
   const { spots, totalCount, types, typesById, subtypesById, isPending, isWaitingForNetwork, error, refetch } =
@@ -52,7 +55,11 @@ export function ListScreen() {
             types={types}
             trailing={
               <RoundLink to="/account" label="Mon compte">
-                <UserRound className="size-6" aria-hidden="true" />
+                {profile.avatar_path || profile.avatar_icon ? (
+                  <Avatar person={profile} size="md" />
+                ) : (
+                  <UserRound className="size-6" aria-hidden="true" />
+                )}
               </RoundLink>
             }
           />

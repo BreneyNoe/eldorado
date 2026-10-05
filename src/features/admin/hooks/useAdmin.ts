@@ -8,8 +8,10 @@ import {
   fetchOrphanFiles,
   fetchSetting,
   fetchStorageReport,
+  fetchUserAvatars,
   listUsers,
   removeFiles,
+  removeUserAvatar,
   saveSetting,
   updateRatingCategory,
   updateSpotType,
@@ -28,6 +30,7 @@ export const ADMIN_PAGE_SIZE = 30
 
 const adminKeys = {
   users: ['admin', 'users'] as const,
+  avatars: ['admin', 'avatars'] as const,
   photos: ['admin', 'photos'] as const,
   updates: ['admin', 'updates'] as const,
   setting: (key: string) => ['admin', 'setting', key] as const,
@@ -48,6 +51,21 @@ function useAdminMutation<TInput>(mutationFn: (input: TInput) => Promise<unknown
 
 export function useUsers() {
   return useQuery<AdminUser[], AppError>({ queryKey: adminKeys.users, queryFn: listUsers })
+}
+
+/** Avatars des comptes, par id d'utilisateur. */
+export function useUserAvatars() {
+  return useQuery<Awaited<ReturnType<typeof fetchUserAvatars>>, AppError>({
+    queryKey: adminKeys.avatars,
+    queryFn: fetchUserAvatars,
+  })
+}
+
+export function useRemoveUserAvatar() {
+  return useAdminMutation(
+    ({ userId, avatarPath }: { userId: string; avatarPath: string | null }) => removeUserAvatar(userId, avatarPath),
+    [adminKeys.avatars, ['spots'], profileQueryKey(null).slice(0, 1)],
+  )
 }
 
 export function useUpdateUser() {
