@@ -10,7 +10,9 @@ export interface SpotDraft {
   lat: number | null
   lng: number | null
   spotTypeId: string | null
-  /** Sous-catégorie choisie, quand le type en propose. */
+  /** Types supplémentaires, en plus du type principal. */
+  extraTypeIds: string[]
+  /** Sous-catégorie choisie, quand l'un des types en propose. */
   subtypeId: string | null
   name: string
   description: string
@@ -40,6 +42,7 @@ export function emptyDraft(now: Date = new Date()): SpotDraft {
     lat: null,
     lng: null,
     spotTypeId: null,
+    extraTypeIds: [],
     subtypeId: null,
     name: '',
     description: '',

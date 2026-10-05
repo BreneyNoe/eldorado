@@ -98,6 +98,7 @@ export function makeSpotLight(id: string, overrides: Partial<SpotLight> = {}): S
     updated_at: '2026-10-01T10:00:00Z',
     cover_thumb_path: null,
     subtype_id: null,
+    extra_type_ids: [],
     ...overrides,
   }
 }

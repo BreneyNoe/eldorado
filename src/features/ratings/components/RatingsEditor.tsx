@@ -53,8 +53,11 @@ export function RatingsEditor({ rows, busy, error, onSave, onClose }: RatingsEdi
           </div>
 
           <div className="divide-y divide-line rounded-xl border border-line px-3">
-            {rows.map((row) => (
+            {rows.map((row, index) => (
               <div key={row.categoryId} className="py-2">
+                {row.group && row.group !== rows[index - 1]?.group && (
+                  <p className="pt-1 pb-1.5 text-sm font-semibold tracking-wide text-ink-soft uppercase">{row.group}</p>
+                )}
                 <StarRatingInput
                   label={row.label}
                   value={values[row.categoryId] ?? null}

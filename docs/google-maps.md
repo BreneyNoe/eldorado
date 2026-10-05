@@ -58,6 +58,17 @@ https://<projet>.supabase.co/functions/v1/resolve-map-link
 
 Après une mise à jour du fichier `supabase/functions/resolve-map-link/index.ts`, il faut le redéployer : ouvre la fonction dans Supabase, remplace son contenu et clique sur **Deploy**.
 
+## Position exacte ou approximative
+
+Google refuse que la fonction lise la page d'un lieu (erreur 429) : elle ne peut donc pas toujours connaître sa position exacte. Selon le lien :
+
+| Ce que tu partages | Position obtenue |
+|---|---|
+| Un repère posé à la main (appui long sur la carte) | Exacte : les coordonnées sont dans le lien |
+| Un lieu connu de Google (commerce, site, favori sur un lieu) | Approximative : retrouvée par le nom du lieu dans OpenStreetMap, sinon par sa zone, à quelques centaines de mètres près, parfois plus |
+
+Quand la position est approximative, l'application le dit, ouvre la carte plus large, et te demande de placer le repère. **Pour une position exacte, pose un repère par appui long dans Google Maps et partage ce repère**, ou copie ses coordonnées (méthode 1).
+
 ## Limites à connaître
 
 - Google ne met pas toujours la position dans le lien d'un lieu. Dans ce cas, la fonction regarde le contenu de la page ; si elle ne trouve rien, l'application le dit et renvoie vers la méthode 1.

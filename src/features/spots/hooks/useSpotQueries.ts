@@ -100,6 +100,7 @@ export function useCreateSpot() {
                 updated_at: now,
                 cover_thumb_path: null,
                 subtype_id: input.subtypeId,
+                extra_type_ids: input.extraTypeIds,
               },
             ]
           : current,

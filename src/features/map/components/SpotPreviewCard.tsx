@@ -8,11 +8,13 @@ interface SpotPreviewCardProps {
   spot: SpotLight
   type: SpotType | undefined
   subtype?: SpotSubtype | null
+  /** Types supplémentaires du spot. */
+  extraTypes?: SpotType[]
   onClose: () => void
 }
 
 /** Aperçu du spot sélectionné sur la carte, avec l'accès à sa fiche complète. */
-export function SpotPreviewCard({ spot, type, subtype, onClose }: SpotPreviewCardProps) {
+export function SpotPreviewCard({ spot, type, subtype, extraTypes, onClose }: SpotPreviewCardProps) {
   const thumbUrl = publicPhotoUrl(spot.cover_thumb_path)
 
   return (
@@ -21,7 +23,7 @@ export function SpotPreviewCard({ spot, type, subtype, onClose }: SpotPreviewCar
       className="w-full rounded-2xl bg-paper p-4 shadow-[0_4px_16px_rgb(22_35_59/0.28)]"
     >
       <div className="flex items-start justify-between gap-3">
-        <SpotTypeBadge type={type} subtype={subtype} />
+        <SpotTypeBadge type={type} subtype={subtype} extraTypes={extraTypes} />
         <button
           type="button"
           onClick={onClose}

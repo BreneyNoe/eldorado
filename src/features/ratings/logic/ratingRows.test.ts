@@ -36,7 +36,7 @@ describe('buildRatingRows', () => {
       [{ category_id: 'beaute', average: 4.5, votes: 2 }],
       [{ category_id: 'beaute', value: 4 }],
     )
-    expect(rows[0]).toEqual({ categoryId: 'beaute', label: 'Beauté', average: 4.5, votes: 2, mine: 4 })
+    expect(rows[0]).toEqual({ categoryId: 'beaute', label: 'Beauté', group: null, average: 4.5, votes: 2, mine: 4 })
   })
 
   it('une catégorie sans avis n\'a pas de moyenne', () => {
@@ -64,9 +64,32 @@ describe('buildRatingRows', () => {
     expect(rows[0].average).toBe(3.5)
   })
 
+  it('spot à plusieurs types : catégories du principal d\'abord, puis des autres, avec leur groupe', () => {
+    const rows = buildRatingRows(
+      ['baignade', 'nature'],
+      categories,
+      [{ category_id: 'cliffjump', average: 4, votes: 1 }],
+      [{ category_id: 'beaute', value: 3.5 }],
+      new Map([['nature', 'Nature'], ['baignade', 'Baignade']]),
+    )
+    expect(rows.map((row) => [row.group, row.label])).toEqual([
+      ['Baignade', 'Cliffjump'],
+      ['Nature', 'Beauté'],
+      ['Nature', 'Accessibilité'],
+      ['Nature', 'Tranquillité'],
+    ])
+    expect(rows[0]).toMatchObject({ average: 4, votes: 1 })
+    expect(rows[1].mine).toBe(3.5)
+  })
+
+  it('un seul type : pas de groupe, même donné sous forme de liste', () => {
+    expect(buildRatingRows(['nature'], categories, [], []).every((row) => row.group === null)).toBe(true)
+    expect(buildRatingRows(['nature', 'nature'], categories, [], [])).toHaveLength(3)
+  })
+
   it('ne produit jamais de note globale', () => {
     const rows = buildRatingRows('nature', categories, [{ category_id: 'beaute', average: 4.5, votes: 2 }], [])
-    expect(Object.keys(rows[0]).sort()).toEqual(['average', 'categoryId', 'label', 'mine', 'votes'])
+    expect(Object.keys(rows[0]).sort()).toEqual(['average', 'categoryId', 'group', 'label', 'mine', 'votes'])
   })
 })
 

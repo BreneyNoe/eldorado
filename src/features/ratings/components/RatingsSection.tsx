@@ -7,7 +7,8 @@ import { formatRating } from '@/lib/formatRating'
 
 interface RatingsSectionProps {
   spotId: string
-  spotTypeId: string
+  /** Types du spot : le principal, puis les supplémentaires. */
+  spotTypeIds: string[]
   /** Utilisateur connecté : c'est sa note qui est affichée et modifiable. */
   userId: string
 }
@@ -16,8 +17,8 @@ interface RatingsSectionProps {
  * Notes d'un spot, catégorie par catégorie : la moyenne de tous, puis la
  * note de l'utilisateur. Volontairement, aucune note globale n'est calculée.
  */
-export function RatingsSection({ spotId, spotTypeId, userId }: RatingsSectionProps) {
-  const { rows, isPending, error, refetch } = useSpotRatings(spotId, spotTypeId, userId)
+export function RatingsSection({ spotId, spotTypeIds, userId }: RatingsSectionProps) {
+  const { rows, isPending, error, refetch } = useSpotRatings(spotId, spotTypeIds, userId)
   const save = useSaveMyRatings(spotId)
   const [editing, setEditing] = useState(false)
 
@@ -47,8 +48,11 @@ export function RatingsSection({ spotId, spotTypeId, userId }: RatingsSectionPro
       ) : (
         <>
           <ul className="mt-3 divide-y divide-line rounded-xl border border-line px-4">
-            {rows.map((row) => (
+            {rows.map((row, index) => (
               <li key={row.categoryId} className="py-3">
+                {row.group && row.group !== rows[index - 1]?.group && (
+                  <p className="pb-1.5 text-sm font-semibold tracking-wide text-ink-soft uppercase">{row.group}</p>
+                )}
                 <div className="flex items-center justify-between gap-3">
                   <p className="min-w-0 text-lg leading-snug font-medium">{row.label}</p>
                   {row.average !== null && <StarRating value={row.average} />}

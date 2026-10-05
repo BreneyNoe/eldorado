@@ -4,7 +4,7 @@ import { Button } from '@/components/Button'
 import { Notice } from '@/components/Notice'
 import type { PhotoDraft } from '@/features/photos/hooks/usePhotoSelection'
 import { ImportLocation } from '@/features/spots/components/create/ImportLocation'
-import type { LatLng } from '@/features/spots/logic/geo'
+import type { ResolvedPosition } from '@/features/spots/api/resolveMapLink'
 
 interface PhotosStepProps {
   photos: PhotoDraft[]
@@ -18,8 +18,8 @@ interface PhotosStepProps {
   onAddFiles: (files: File[], fromCamera: boolean) => void
   onRemove: (key: string) => void
   /** Position reprise de Google Maps (coordonnées ou lien collés), ou null. */
-  importedPosition: LatLng | null
-  onImportPosition: (position: LatLng | null) => void
+  importedPosition: ResolvedPosition | null
+  onImportPosition: (position: ResolvedPosition | null) => void
   onContinue: () => void
   onCancel: () => void
 }

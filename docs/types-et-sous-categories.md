@@ -8,6 +8,23 @@ Trois tables décrivent ce qu'on peut créer et noter. Rien n'est écrit en dur 
 | `rating_categories` | Les catégories de notes de chaque type | Ride : Originalité, Difficulté, Faisabilité |
 | `spot_subtypes` | Les sous-catégories d'un type | Ride : Gaps, Ledges et curbs, Plans inclinés, Rails, Goofy |
 
+## Plusieurs types pour un même spot
+
+Un spot a un **type principal**, choisi à la création et qui ne se modifie plus. C'est lui qui donne la couleur et l'icône du marqueur sur la carte.
+
+Il peut recevoir des **types supplémentaires** : une usine désaffectée au bord d'un étang peut être à la fois Pêche et Urbex. Dans ce cas :
+
+- le spot apparaît dans le filtre de chacun de ses types, sur la carte comme dans les listes ;
+- il s'affiche sous la forme « Pêche + Urbex » ;
+- il se note sur les catégories de tous ses types, regroupées par type ;
+- si l'un de ses types propose des sous-catégories, il faut en choisir une.
+
+Les types supplémentaires se choisissent à la création, sous le type principal, et se modifient ensuite depuis l'écran « Modifier » du spot. Seuls la personne qui a créé le spot et les administrateurs peuvent les changer.
+
+Retirer un type supplémentaire efface la sous-catégorie qui lui appartenait. Les notes déjà données sur ses catégories ne sont pas supprimées : elles ne s'affichent plus, et réapparaissent si le type est remis.
+
+Dans la base, ces types sont dans la table `spot_extra_types`.
+
 ## Sous-catégories
 
 - Une sous-catégorie appartient à un seul type. La base refuse d'en donner une à un spot d'un autre type.

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { SpotListItem } from '@/features/spots/components/SpotListItem'
+import { extraTypesOf } from '@/features/spots/logic/spotTypes'
 import type { SpotLight, SpotSubtype, SpotType } from '@/types/models'
 
 /** Nombre de lignes affichées d'emblée, puis ajoutées à chaque "Afficher plus". */
@@ -40,6 +41,7 @@ export function SpotList({ spots, typesById, subtypesById, onSelect, distanceLab
             spot={spot}
             type={typesById.get(spot.spot_type_id)}
             subtype={spot.subtype_id ? subtypesById?.get(spot.subtype_id) : undefined}
+            extraTypes={extraTypesOf(spot.extra_type_ids, typesById)}
             distanceLabel={distanceLabelOf?.(spot)}
             onSelect={onSelect}
           />

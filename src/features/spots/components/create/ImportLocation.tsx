@@ -3,16 +3,15 @@ import { ClipboardPaste, MapPin } from 'lucide-react'
 import { Button } from '@/components/Button'
 import { Notice } from '@/components/Notice'
 import { TextField } from '@/components/TextField'
-import { resolveMapLink } from '@/features/spots/api/resolveMapLink'
-import type { LatLng } from '@/features/spots/logic/geo'
+import { resolveMapLink, type ResolvedPosition } from '@/features/spots/api/resolveMapLink'
 import { parseLocation } from '@/features/spots/logic/parseLocation'
 import { toAppError } from '@/lib/errors'
 
 interface ImportLocationProps {
   /** Position déjà reprise, ou null. */
-  value: LatLng | null
+  value: ResolvedPosition | null
   /** Appelé avec la position trouvée dans le texte collé, ou null quand on la retire. */
-  onChange: (position: LatLng | null) => void
+  onChange: (position: ResolvedPosition | null) => void
 }
 
 /**
@@ -29,7 +28,7 @@ export function ImportLocation({ value, onChange }: ImportLocationProps) {
   const [busy, setBusy] = useState(false)
 
   /** Position trouvée : on la retient et on referme le formulaire. On reste sur l'écran, pour pouvoir ajouter des photos. */
-  function accept(position: LatLng) {
+  function accept(position: ResolvedPosition) {
     onChange(position)
     setOpen(false)
     setText('')
@@ -80,9 +79,13 @@ export function ImportLocation({ value, onChange }: ImportLocationProps) {
       <div role="status" className="flex items-center gap-3 rounded-xl border-2 border-ok/40 bg-ok/10 px-4 py-3">
         <MapPin className="size-6 shrink-0 text-ok" aria-hidden="true" />
         <p className="min-w-0 flex-1 text-base">
-          <span className="font-semibold">Position reprise de Google Maps</span>
+          <span className="font-semibold">
+            {value.approximate ? 'Position approximative reprise de Google Maps' : 'Position reprise de Google Maps'}
+          </span>
           <br />
-          {value.lat.toFixed(5)}, {value.lng.toFixed(5)}
+          {value.approximate
+            ? 'Tu placeras le repère au bon endroit à l\u2019étape suivante.'
+            : `${value.lat.toFixed(5)}, ${value.lng.toFixed(5)}`}
         </p>
         <button
           type="button"

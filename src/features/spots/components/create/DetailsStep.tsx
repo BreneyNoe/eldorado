@@ -5,10 +5,12 @@ import { Notice } from '@/components/Notice'
 import { StarRatingInput } from '@/components/StarRatingInput'
 import { TextAreaField, TextField } from '@/components/TextField'
 import { TEXT_LIMITS } from '@/config/constants'
+import { ExtraTypesPicker } from '@/features/spots/components/create/ExtraTypesPicker'
 import { SubtypePicker } from '@/features/spots/components/create/SubtypePicker'
 import { TypePicker } from '@/features/spots/components/create/TypePicker'
 import { SpotTypeBadge } from '@/features/spots/components/SpotTypeBadge'
 import { todayIso, type SpotDraft, type SpotDraftErrors } from '@/features/spots/logic/spotDraft'
+import { allTypeIds } from '@/features/spots/logic/spotTypes'
 import type { RatingCategory, SpotSubtype, SpotType } from '@/types/models'
 
 interface DetailsStepProps {
@@ -68,15 +70,29 @@ export function DetailsStep({
   submitLabel = 'Créer le spot',
   footer,
 }: DetailsStepProps) {
-  // Seules les catégories du type choisi sont proposées.
-  const typeCategories = categories
-    .filter((category) => category.spot_type_id === draft.spotTypeId && category.is_active)
-    .sort((a, b) => a.sort_order - b.sort_order)
-
-  // Sous-catégories du type du spot, s'il en propose.
+  // Tous les types du spot : le principal, puis les supplémentaires.
+  const spotTypeIds = allTypeIds(draft.spotTypeId, draft.extraTypeIds)
   const currentType = lockedType ?? types.find((type) => type.id === draft.spotTypeId)
-  const typeSubtypes = subtypes
-    .filter((subtype) => subtype.spot_type_id === draft.spotTypeId && subtype.is_active)
+  const typeLabels = new Map(types.map((type) => [type.id, type.label]))
+
+  // Catégories de notes de tous les types du spot, regroupées par type.
+  const typeCategories = spotTypeIds.flatMap((typeId) =>
+    categories
+      .filter((category) => category.spot_type_id === typeId && category.is_active)
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((category) => ({ ...category, group: spotTypeIds.length > 1 ? (typeLabels.get(typeId) ?? null) : null })),
+  )
+
+  // Sous-catégories proposées par l'un des types du spot.
+  const typeSubtypes = spotTypeIds.flatMap((typeId) =>
+    subtypes
+      .filter((subtype) => subtype.spot_type_id === typeId && subtype.is_active)
+      .sort((a, b) => a.sort_order - b.sort_order),
+  )
+
+  // Types que l'on peut ajouter : actifs, hors type principal.
+  const extraChoices = types
+    .filter((type) => type.is_active && type.id !== draft.spotTypeId)
     .sort((a, b) => a.sort_order - b.sort_order)
 
   function handleSubmit(event: FormEvent) {
@@ -121,15 +137,37 @@ export function DetailsStep({
               types={types}
               value={draft.spotTypeId}
               // Changer de type efface les notes et la sous-catégorie : elles dépendent du type.
-              onChange={(spotTypeId) => onChange({ spotTypeId, subtypeId: null, ratings: {} })}
+              onChange={(spotTypeId) =>
+                onChange({
+                  spotTypeId,
+                  // Le nouveau type principal ne peut pas rester parmi les supplémentaires.
+                  extraTypeIds: draft.extraTypeIds.filter((id) => id !== spotTypeId),
+                  subtypeId: null,
+                  ratings: {},
+                })
+              }
               error={errors.spotTypeId}
+            />
+          )}
+
+          {draft.spotTypeId && (
+            <ExtraTypesPicker
+              types={extraChoices}
+              value={draft.extraTypeIds}
+              onChange={(extraTypeIds) => {
+                // Retirer un type efface la sous-catégorie qui lui appartenait.
+                const kept = subtypes.find((subtype) => subtype.id === draft.subtypeId)
+                const stillValid = kept && allTypeIds(draft.spotTypeId, extraTypeIds).includes(kept.spot_type_id)
+                onChange({ extraTypeIds, ...(stillValid ? {} : { subtypeId: null }) })
+              }}
             />
           )}
 
           {typeSubtypes.length > 0 && currentType && (
             <SubtypePicker
               subtypes={typeSubtypes}
-              color={currentType.color}
+              // Couleur du type auquel appartiennent ces sous-catégories (ce peut être un type supplémentaire).
+              color={types.find((type) => type.id === typeSubtypes[0]?.spot_type_id)?.color ?? currentType.color}
               value={draft.subtypeId}
               onChange={(subtypeId) => onChange({ subtypeId })}
               // En modification, la sous-catégorie reste facultative : on peut la retirer.
@@ -154,8 +192,11 @@ export function DetailsStep({
             <fieldset className="min-w-0">
               <legend className="text-base font-medium">Tes notes (facultatif)</legend>
               <div className="mt-1.5 divide-y divide-line rounded-xl border border-line px-3">
-                {typeCategories.map((category) => (
+                {typeCategories.map((category, index) => (
                   <div key={category.id} className="py-2">
+                    {category.group && category.group !== typeCategories[index - 1]?.group && (
+                      <p className="pt-1 pb-1.5 text-sm font-semibold tracking-wide text-ink-soft uppercase">{category.group}</p>
+                    )}
                     <StarRatingInput
                       label={category.label}
                       value={draft.ratings[category.id] ?? null}

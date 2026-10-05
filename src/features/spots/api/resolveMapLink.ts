@@ -63,8 +63,13 @@ export function mapLinkFailureMessage(status: number | undefined, body: Function
   return { code: 'APP_MAP_LINK_FAILED', message: `Ce lien n'a pas pu être lu. ${FALLBACK_HELP}${detail}` }
 }
 
-export async function resolveMapLink(url: string): Promise<LatLng> {
-  const { data, error } = await supabase.functions.invoke<{ lat?: number; lng?: number }>('resolve-map-link', {
+/** Position tirée d'un lien. `approximate` : elle est proche du lieu, mais le repère reste à ajuster. */
+export interface ResolvedPosition extends LatLng {
+  approximate?: boolean
+}
+
+export async function resolveMapLink(url: string): Promise<ResolvedPosition> {
+  const { data, error } = await supabase.functions.invoke<{ lat?: number; lng?: number; approximate?: boolean }>('resolve-map-link', {
     body: { url },
   })
 
@@ -87,5 +92,5 @@ export async function resolveMapLink(url: string): Promise<LatLng> {
     const failure = mapLinkFailureMessage(200, { error: 'position_not_found' })
     throw new AppError('not_found', failure.message, { code: failure.code })
   }
-  return { lat: data.lat as number, lng: data.lng as number }
+  return { lat: data.lat as number, lng: data.lng as number, ...(data.approximate ? { approximate: true } : {}) }
 }

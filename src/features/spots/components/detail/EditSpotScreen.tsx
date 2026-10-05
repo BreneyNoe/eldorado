@@ -32,6 +32,7 @@ function draftFromSpot(spot: SpotDetail): SpotDraft {
     lat: spot.lat,
     lng: spot.lng,
     spotTypeId: spot.spot_type_id,
+    extraTypeIds: (spot.extra_types ?? []).map((entry) => entry.spot_type_id),
     subtypeId: spot.subtype_id,
     name: spot.name,
     description: spot.description ?? '',
@@ -83,6 +84,7 @@ function EditSpotForm({ spot, type, canDelete }: EditSpotFormProps) {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const subtypes = useSpotSubtypes().data ?? []
+  const allTypes = useSpotTypes().data ?? []
   const updateSpot = useUpdateSpot(spot.id)
   const deleteSpot = useDeleteSpot(spot.id)
 
@@ -148,6 +150,7 @@ function EditSpotForm({ spot, type, canDelete }: EditSpotFormProps) {
         addressSource: address ? addressSource : 'auto',
         visitedOn: draft.visitedOn || null,
         subtypeId: draft.subtypeId,
+        extraTypeIds: draft.extraTypeIds,
       },
       { onSuccess: () => void navigate(-1) },
     )
@@ -159,7 +162,7 @@ function EditSpotForm({ spot, type, canDelete }: EditSpotFormProps) {
         draft={draft}
         addressValue={addressValue}
         addressPending={moved && !draft.addressEdited && geocode.isPending}
-        types={[]}
+        types={allTypes}
         subtypes={subtypes}
         categories={[]}
         lockedType={type}

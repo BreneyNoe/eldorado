@@ -71,6 +71,34 @@ export type Database = {
         }
         Relationships: []
       }
+      spot_extra_types: {
+        Row: {
+          spot_id: string
+          spot_type_id: string
+          created_at: string
+        }
+        Insert: {
+          spot_id: string
+          spot_type_id: string
+        }
+        Update: Record<string, never>
+        Relationships: [
+          {
+            foreignKeyName: 'spot_extra_types_spot_id_fkey'
+            columns: ['spot_id']
+            isOneToOne: false
+            referencedRelation: 'spots'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'spot_extra_types_spot_type_id_fkey'
+            columns: ['spot_type_id']
+            isOneToOne: false
+            referencedRelation: 'spot_types'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       spot_subtypes: {
         Row: {
           id: string
@@ -376,6 +404,8 @@ export type Database = {
           updated_at: string
           cover_thumb_path: string | null
           subtype_id: string | null
+          /** Types supplémentaires du spot, en plus de son type principal. */
+          extra_type_ids: string[]
         }
         Relationships: [
           {
@@ -448,7 +478,13 @@ export type Database = {
           updated_at: string
           cover_thumb_path: string | null
           subtype_id: string | null
+          /** Types supplémentaires du spot, en plus de son type principal. */
+          extra_type_ids: string[]
         }[]
+      }
+      set_spot_extra_types: {
+        Args: { p_spot_id: string; p_type_ids: string[] }
+        Returns: undefined
       }
       ping: {
         Args: Record<string, never>
@@ -466,6 +502,7 @@ export type Database = {
           p_visited_on?: string
           p_ratings?: RatingsInput
           p_subtype_id?: string
+          p_extra_type_ids?: string[]
         }
         /** Id du spot créé. */
         Returns: string

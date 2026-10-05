@@ -6,6 +6,7 @@ import {
   matchesSearch,
   normalizeText,
   toggleType,
+  hasAnyType,
 } from '@/features/spots/logic/filters'
 import type { SpotLight } from '@/types/models'
 
@@ -22,6 +23,7 @@ function makeSpot(id: string, name: string, typeId: string): SpotLight {
     updated_at: '2026-10-01T10:00:00Z',
     cover_thumb_path: null,
     subtype_id: null,
+    extra_type_ids: [],
   }
 }
 
@@ -111,5 +113,21 @@ describe('toggleType', () => {
 
   it('revient à "tous" quand tous les types sont cochés', () => {
     expect(toggleType(['nature', 'peche', 'baignade'], 'urbex', all)).toEqual([])
+  })
+})
+
+describe('hasAnyType', () => {
+  const both = { spot_type_id: 'type-peche', extra_type_ids: ['type-urbex'] }
+
+  it('répond au type principal comme aux types supplémentaires', () => {
+    expect(hasAnyType(both, new Set(['type-peche']))).toBe(true)
+    expect(hasAnyType(both, new Set(['type-urbex']))).toBe(true)
+    expect(hasAnyType(both, new Set(['type-nature']))).toBe(false)
+  })
+
+  it('tolère une donnée ancienne, sans liste de types supplémentaires', () => {
+    const old = { spot_type_id: 'type-peche' } as unknown as typeof both
+    expect(hasAnyType(old, new Set(['type-peche']))).toBe(true)
+    expect(hasAnyType(old, new Set(['type-urbex']))).toBe(false)
   })
 })

@@ -8,20 +8,20 @@
 -- =====================================================================
 
 with checks (check_name, expected, actual) as (
-  select 'tables', '9',
+  select 'tables', '10',
     (select count(*)::text from pg_tables
       where schemaname = 'public'
         and tablename in ('profiles', 'spot_types', 'rating_categories', 'spots',
-                          'spot_photos', 'spot_ratings', 'spot_updates', 'app_settings', 'spot_subtypes'))
+                          'spot_photos', 'spot_ratings', 'spot_updates', 'app_settings', 'spot_subtypes', 'spot_extra_types'))
   union all
-  select 'tables avec RLS active', '9',
+  select 'tables avec RLS active', '10',
     (select count(*)::text from pg_tables
       where schemaname = 'public'
         and rowsecurity
         and tablename in ('profiles', 'spot_types', 'rating_categories', 'spots',
-                          'spot_photos', 'spot_ratings', 'spot_updates', 'app_settings', 'spot_subtypes'))
+                          'spot_photos', 'spot_ratings', 'spot_updates', 'app_settings', 'spot_subtypes', 'spot_extra_types'))
   union all
-  select 'regles RLS (tables)', '33',
+  select 'regles RLS (tables)', '36',
     (select count(*)::text from pg_policies where schemaname = 'public')
   union all
   select 'regles RLS (stockage)', '3',

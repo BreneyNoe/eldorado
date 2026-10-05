@@ -71,6 +71,16 @@ function Harness({ suggested = 'D 215, Péreyres, Ardèche', onSubmit }: { sugge
   )
 }
 
+/** Bouton d'un type dans le choix du type principal. */
+function mainType(name: string) {
+  return within(screen.getByRole('group', { name: 'Type de spot' })).getByRole('button', { name })
+}
+
+/** Pastille d'un type dans le choix des types supplémentaires. */
+function extraType(name: string) {
+  return within(screen.getByRole('group', { name: 'Autres types (facultatif)' })).getByRole('button', { name })
+}
+
 function ratingGroups() {
   const fieldset = screen.getByRole('group', { name: 'Tes notes (facultatif)' })
   return within(fieldset)
@@ -81,8 +91,8 @@ function ratingGroups() {
 describe('DetailsStep', () => {
   it('propose les types actifs seulement, et aucune note avant le choix du type', () => {
     render(<Harness onSubmit={() => {}} />)
-    expect(screen.getByRole('button', { name: 'Nature' })).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'Baignade' })).toBeTruthy()
+    expect(mainType('Nature')).toBeTruthy()
+    expect(mainType('Baignade')).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Ancien' })).toBeNull()
     expect(screen.queryByRole('group', { name: 'Tes notes (facultatif)' })).toBeNull()
   })
@@ -91,11 +101,53 @@ describe('DetailsStep', () => {
     const user = userEvent.setup()
     render(<Harness onSubmit={() => {}} />)
 
-    await user.click(screen.getByRole('button', { name: 'Nature' }))
+    await user.click(mainType('Nature'))
     expect(ratingGroups()).toEqual(['Beauté', 'Accessibilité', 'Tranquillité'])
 
-    await user.click(screen.getByRole('button', { name: 'Baignade' }))
+    await user.click(mainType('Baignade'))
     expect(ratingGroups()).toEqual(['Beauté', 'Cliffjump'])
+  })
+
+  it('types supplémentaires : proposés une fois le type principal choisi, sans lui', async () => {
+    const user = userEvent.setup()
+    render(<Harness onSubmit={() => {}} />)
+    expect(screen.queryByRole('group', { name: 'Autres types (facultatif)' })).toBeNull()
+
+    await user.click(mainType('Nature'))
+    const choices = within(screen.getByRole('group', { name: 'Autres types (facultatif)' })).getAllByRole('button')
+    expect(choices.map((button) => button.textContent)).toEqual(['Baignade'])
+  })
+
+  it('un type supplémentaire ajoute ses catégories de notes, à la suite de celles du type principal', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    render(<Harness onSubmit={onSubmit} />)
+
+    await user.click(mainType('Nature'))
+    await user.click(extraType('Baignade'))
+    expect(extraType('Baignade').getAttribute('aria-pressed')).toBe('true')
+    expect(ratingGroups()).toEqual(['Beauté', 'Accessibilité', 'Tranquillité', 'Beauté', 'Cliffjump'])
+    // Chaque groupe porte le nom de son type.
+    const fieldset = screen.getByRole('group', { name: 'Tes notes (facultatif)' })
+    expect(within(fieldset).getByText('Nature')).toBeTruthy()
+    expect(within(fieldset).getByText('Baignade')).toBeTruthy()
+
+    await user.type(screen.getByLabelText('Nom'), 'Vasque')
+    await user.click(screen.getByRole('button', { name: 'Créer le spot' }))
+    const [draft] = onSubmit.mock.calls[0] as [SpotDraft, string]
+    expect(draft).toMatchObject({ spotTypeId: 'type-nature', extraTypeIds: ['type-baignade'] })
+  })
+
+  it('le type principal ne peut pas rester parmi les supplémentaires', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    render(<Harness onSubmit={onSubmit} />)
+
+    await user.click(mainType('Nature'))
+    await user.click(extraType('Baignade'))
+    await user.click(mainType('Baignade'))
+    expect(within(screen.getByRole('group', { name: 'Autres types (facultatif)' })).getAllByRole('button').map((b) => b.textContent)).toEqual(['Nature'])
+    expect(extraType('Nature').getAttribute('aria-pressed')).toBe('false')
   })
 
   it('efface les notes quand le type change', async () => {
@@ -103,9 +155,9 @@ describe('DetailsStep', () => {
     const onSubmit = vi.fn()
     render(<Harness onSubmit={onSubmit} />)
 
-    await user.click(screen.getByRole('button', { name: 'Nature' }))
+    await user.click(mainType('Nature'))
     await user.click(within(screen.getByRole('group', { name: 'Beauté' })).getByRole('button', { name: '5 étoiles' }))
-    await user.click(screen.getByRole('button', { name: 'Baignade' }))
+    await user.click(mainType('Baignade'))
     expect(within(screen.getByRole('group', { name: 'Beauté' })).getByText('Non noté')).toBeTruthy()
   })
 
@@ -125,7 +177,7 @@ describe('DetailsStep', () => {
     const onSubmit = vi.fn()
     render(<Harness onSubmit={onSubmit} />)
 
-    await user.click(screen.getByRole('button', { name: 'Nature' }))
+    await user.click(mainType('Nature'))
     await user.type(screen.getByLabelText('Nom'), 'Cascade du Ray-Pic')
     await user.click(within(screen.getByRole('group', { name: 'Beauté' })).getByRole('button', { name: '5 étoiles' }))
     await user.click(within(screen.getByRole('group', { name: 'Tranquillité' })).getByRole('button', { name: '3 étoiles' }))
@@ -149,7 +201,7 @@ describe('DetailsStep', () => {
     const onSubmit = vi.fn()
     render(<Harness onSubmit={onSubmit} />)
 
-    await user.click(screen.getByRole('button', { name: 'Nature' }))
+    await user.click(mainType('Nature'))
     await user.type(screen.getByLabelText('Nom'), 'Cascade')
     const address = screen.getByLabelText('Adresse (facultatif)')
     expect((address as HTMLInputElement).value).toBe('D 215, Péreyres, Ardèche')

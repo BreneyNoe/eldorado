@@ -1,15 +1,18 @@
 import { SpotIcon } from '@/features/spots/components/SpotIcon'
 import { UNKNOWN_TYPE_COLOR } from '@/features/spots/logic/spotIcons'
+import { typesLabel } from '@/features/spots/logic/spotTypes'
 import type { SpotSubtype, SpotType } from '@/types/models'
 
 interface SpotTypeBadgeProps {
   type: SpotType | undefined
   /** Sous-catégorie du spot, s'il en a une : son icône remplace celle du type. */
   subtype?: SpotSubtype | null
+  /** Types supplémentaires du spot. */
+  extraTypes?: SpotType[]
 }
 
 /** Pastille colorée + nom du type (et de la sous-catégorie), reprise à l'identique du marqueur sur la carte. */
-export function SpotTypeBadge({ type, subtype }: SpotTypeBadgeProps) {
+export function SpotTypeBadge({ type, subtype, extraTypes = [] }: SpotTypeBadgeProps) {
   const color = type?.color ?? UNKNOWN_TYPE_COLOR
 
   return (
@@ -22,7 +25,7 @@ export function SpotTypeBadge({ type, subtype }: SpotTypeBadgeProps) {
         <SpotIcon name={subtype?.icon ?? type?.icon} className="size-4" />
       </span>
       <span>
-        {type?.label ?? 'Type inconnu'}
+        {typesLabel(type, extraTypes)}
         {subtype && ` · ${subtype.label}`}
       </span>
     </span>

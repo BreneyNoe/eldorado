@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchRatingSummary, fetchUserRatings, saveMyRatings } from '@/features/ratings/api/ratingsApi'
 import { buildRatingRows } from '@/features/ratings/logic/ratingRows'
-import { useRatingCategories } from '@/features/spots/hooks/useSpotQueries'
+import { useRatingCategories, useSpotTypes } from '@/features/spots/hooks/useSpotQueries'
 import type { AppError } from '@/lib/errors'
 import type { RatingsInput, RatingSummary } from '@/types/models'
 
@@ -14,8 +14,9 @@ const ratingKeys = {
 }
 
 /** Lignes de notes d'un spot : moyenne, nombre d'avis et note de l'utilisateur, par catégorie. */
-export function useSpotRatings(spotId: string, spotTypeId: string, userId: string) {
+export function useSpotRatings(spotId: string, spotTypeIds: string[], userId: string) {
   const categoriesQuery = useRatingCategories()
+  const types = useSpotTypes().data
   const summaryQuery = useQuery<RatingSummary[], AppError>({
     queryKey: ratingKeys.summary(spotId),
     queryFn: () => fetchRatingSummary(spotId),
@@ -25,9 +26,18 @@ export function useSpotRatings(spotId: string, spotTypeId: string, userId: strin
     queryFn: () => fetchUserRatings(spotId, userId),
   })
 
+  // La liste des types change d'identité à chaque rendu : on la compare par son contenu.
+  const typesKey = spotTypeIds.join(',')
   const rows = useMemo(
-    () => buildRatingRows(spotTypeId, categoriesQuery.data ?? [], summaryQuery.data ?? [], mineQuery.data ?? []),
-    [spotTypeId, categoriesQuery.data, summaryQuery.data, mineQuery.data],
+    () =>
+      buildRatingRows(
+        typesKey.split(',').filter(Boolean),
+        categoriesQuery.data ?? [],
+        summaryQuery.data ?? [],
+        mineQuery.data ?? [],
+        new Map((types ?? []).map((type) => [type.id, type.label])),
+      ),
+    [typesKey, categoriesQuery.data, summaryQuery.data, mineQuery.data, types],
   )
 
   return {

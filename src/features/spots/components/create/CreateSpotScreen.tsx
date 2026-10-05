@@ -15,7 +15,7 @@ import { proposePosition } from '@/features/photos/logic/proposePosition'
 import { DetailsStep } from '@/features/spots/components/create/DetailsStep'
 import { PhotosStep } from '@/features/spots/components/create/PhotosStep'
 import { PositionStep } from '@/features/spots/components/create/PositionStep'
-import type { LatLng } from '@/features/spots/logic/geo'
+import type { ResolvedPosition } from '@/features/spots/api/resolveMapLink'
 import { useOnlineStatus } from '@/lib/useOnlineStatus'
 import {
   useCreateSpot,
@@ -32,6 +32,7 @@ import {
   type SpotDraft,
   type SpotDraftErrors,
 } from '@/features/spots/logic/spotDraft'
+import { allTypeIds } from '@/features/spots/logic/spotTypes'
 
 const STEP_PARAM = 'etape'
 const POSITION_STEP = 'position'
@@ -39,6 +40,8 @@ const DETAILS_STEP = 'infos'
 
 /** Zoom appliqué quand la carte de placement s'ouvre sur une position précise. */
 const PRECISE_ZOOM = 17
+/** Zoom appliqué quand la position de départ n'est qu'approximative. */
+const APPROXIMATE_ZOOM = 15
 
 type Step = 'photos' | 'position' | 'details'
 
@@ -73,7 +76,7 @@ export function CreateSpotScreen() {
   // Vrai pendant qu'on quitte l'écran, pour ne pas réafficher une étape au passage.
   const [leaving, setLeaving] = useState(false)
   // Position reprise de Google Maps (coordonnées ou lien collés à la première étape).
-  const [imported, setImported] = useState<LatLng | null>(null)
+  const [imported, setImported] = useState<ResolvedPosition | null>(null)
 
   const hasPosition = draft.lat !== null && draft.lng !== null
   const stepParam = searchParams.get(STEP_PARAM)
@@ -100,7 +103,9 @@ export function CreateSpotScreen() {
 
   let positionNotice: string | null = null
   if (imported) {
-    positionNotice = 'Position reprise de Google Maps.'
+    positionNotice = imported.approximate
+      ? 'Google Maps n\u2019a donné qu\u2019une position approximative du lieu.'
+      : 'Position reprise de Google Maps.'
   } else if (proposal) {
     const onlyDevice = photos.every((photo) => photo.gps === null || photo.gpsSource === 'device')
     positionNotice = onlyDevice ? 'Position de ton téléphone au moment de la photo.' : proposal.explanation
@@ -159,8 +164,9 @@ export function CreateSpotScreen() {
 
   function handleSubmit() {
     // Un type qui propose des sous-catégories en exige une à la création.
+    const spotTypeIds = allTypeIds(draft.spotTypeId, draft.extraTypeIds)
     const subtypeRequired = (subtypesQuery.data ?? []).some(
-      (subtype) => subtype.spot_type_id === draft.spotTypeId && subtype.is_active,
+      (subtype) => spotTypeIds.includes(subtype.spot_type_id) && subtype.is_active,
     )
     const validation = validateSpotDraft({ ...draft, address: addressValue }, new Date(), { subtypeRequired })
     setErrors(validation)
@@ -170,6 +176,7 @@ export function CreateSpotScreen() {
       {
         spotTypeId: draft.spotTypeId!,
         subtypeId: draft.subtypeId,
+        extraTypeIds: draft.extraTypeIds,
         name: draft.name.trim(),
         lat: draft.lat!,
         lng: draft.lng!,
@@ -253,7 +260,8 @@ export function CreateSpotScreen() {
     if (hasPosition) {
       initialView = { lat: draft.lat!, lng: draft.lng!, zoom: Math.max(startView.zoom, PRECISE_ZOOM) }
     } else if (imported) {
-      initialView = { ...imported, zoom: PRECISE_ZOOM }
+      // Position approximative : vue plus large, pour retrouver le lieu autour du repère.
+      initialView = { lat: imported.lat, lng: imported.lng, zoom: imported.approximate ? APPROXIMATE_ZOOM : PRECISE_ZOOM }
     } else if (proposal) {
       initialView = { ...proposal.position, zoom: PRECISE_ZOOM }
     }

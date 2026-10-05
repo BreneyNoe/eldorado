@@ -10,6 +10,8 @@ import type { AddressSource, Spot, SpotPhoto } from '@/types/models'
 /** Un spot complet, avec le nom affiché de son créateur (null si le compte a été supprimé). */
 export interface SpotDetail extends Spot {
   creator: { display_name: string } | null
+  /** Types supplémentaires du spot, en plus de son type principal. */
+  extra_types: { spot_type_id: string }[]
 }
 
 /** Une photo, avec le nom affiché de la personne qui l'a ajoutée. */
@@ -22,7 +24,7 @@ export async function fetchSpot(spotId: string): Promise<SpotDetail | null> {
   const { data, error } = await supabase
     .from('spots')
     .select(
-      'id, spot_type_id, name, description, lat, lng, address, address_source, visited_on, created_by, cover_photo_id, subtype_id, created_at, updated_at, creator:profiles(display_name)',
+      'id, spot_type_id, name, description, lat, lng, address, address_source, visited_on, created_by, cover_photo_id, subtype_id, created_at, updated_at, creator:profiles(display_name), extra_types:spot_extra_types(spot_type_id)',
     )
     .eq('id', spotId)
     .maybeSingle()
@@ -54,10 +56,19 @@ export interface SpotChanges {
   /** Date au format AAAA-MM-JJ. */
   visitedOn: string | null
   subtypeId: string | null
+  /** Types supplémentaires voulus : la liste remplace l'ancienne. */
+  extraTypeIds: string[]
 }
 
 /** Modifie les informations d'un spot (réservé à son créateur et aux admins : la base le vérifie). */
 export async function updateSpot(spotId: string, changes: SpotChanges): Promise<void> {
+  // Les types d'abord : la sous-catégorie enregistrée ensuite peut appartenir à l'un d'eux.
+  const { error: typesError } = await supabase.rpc('set_spot_extra_types', {
+    p_spot_id: spotId,
+    p_type_ids: changes.extraTypeIds,
+  })
+  if (typesError) throw toAppError(typesError)
+
   const { data, error } = await supabase
     .from('spots')
     .update({

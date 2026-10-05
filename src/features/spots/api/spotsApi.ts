@@ -65,8 +65,10 @@ export async function fetchNearbySpots(lat: number, lng: number, excludeSpotId?:
 
 export interface CreateSpotInput {
   spotTypeId: string
-  /** Sous-catégorie du type, s'il en propose. */
+  /** Sous-catégorie, si l'un des types du spot en propose. */
   subtypeId: string | null
+  /** Types supplémentaires, en plus du type principal. */
+  extraTypeIds: string[]
   name: string
   lat: number
   lng: number
@@ -95,6 +97,7 @@ export async function createSpot(input: CreateSpotInput): Promise<string> {
     p_visited_on: input.visitedOn ?? undefined,
     p_ratings: input.ratings,
     ...(input.subtypeId ? { p_subtype_id: input.subtypeId } : {}),
+    ...(input.extraTypeIds.length > 0 ? { p_extra_type_ids: input.extraTypeIds } : {}),
   })
   if (error) throw toAppError(error)
   return data

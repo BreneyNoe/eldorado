@@ -8,9 +8,9 @@ import type { RatingRow } from '@/features/ratings/logic/ratingRows'
 afterEach(cleanup)
 
 const rows: RatingRow[] = [
-  { categoryId: 'beaute', label: 'Beauté', average: 4.5, votes: 2, mine: 4 },
-  { categoryId: 'accessibilite', label: 'Accessibilité', average: 3, votes: 1, mine: null },
-  { categoryId: 'tranquillite', label: 'Tranquillité', average: null, votes: 0, mine: null },
+  { categoryId: 'beaute', label: 'Beauté', group: null, average: 4.5, votes: 2, mine: 4 },
+  { categoryId: 'accessibilite', label: 'Accessibilité', group: null, average: 3, votes: 1, mine: null },
+  { categoryId: 'tranquillite', label: 'Tranquillité', group: null, average: null, votes: 0, mine: null },
 ]
 
 function renderEditor(props: Partial<Parameters<typeof RatingsEditor>[0]> = {}) {

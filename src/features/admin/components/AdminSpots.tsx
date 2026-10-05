@@ -5,6 +5,7 @@ import { TextField } from '@/components/TextField'
 import { useSpotsLight, useSpotTypes } from '@/features/spots/hooks/useSpotQueries'
 import { matchesSearch } from '@/features/spots/logic/filters'
 import { sortSpots } from '@/features/spots/logic/geo'
+import { extraTypesOf, typesLabel } from '@/features/spots/logic/spotTypes'
 
 const PAGE_SIZE = 50
 const LINK = 'flex h-11 items-center rounded-xl bg-mist px-4 text-base font-semibold text-ink active:bg-line'
@@ -16,6 +17,7 @@ export function AdminSpots() {
   const [search, setSearch] = useState('')
   const [limit, setLimit] = useState(PAGE_SIZE)
 
+  const typesById = useMemo(() => new Map((types.data ?? []).map((type) => [type.id, type])), [types.data])
   const matching = useMemo(
     () => sortSpots((spots.data ?? []).filter((spot) => matchesSearch(spot.name, search)), 'name'),
     [spots.data, search],
@@ -49,7 +51,7 @@ export function AdminSpots() {
             <div className="min-w-0">
               <p className="truncate text-lg font-semibold">{spot.name}</p>
               <p className="truncate text-base text-ink-soft">
-                {types.data?.find((type) => type.id === spot.spot_type_id)?.label ?? 'Type inconnu'}
+                {typesLabel(typesById.get(spot.spot_type_id), extraTypesOf(spot.extra_type_ids, typesById))}
                 {spot.address && ` · ${spot.address}`}
               </p>
             </div>

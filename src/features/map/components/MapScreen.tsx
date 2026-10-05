@@ -18,6 +18,7 @@ import { useSpotFilters } from '@/features/spots/hooks/SpotFiltersContext'
 import { useFilteredSpots } from '@/features/spots/hooks/useFilteredSpots'
 import { normalizeText } from '@/features/spots/logic/filters'
 import { buildPinStyles } from '@/features/spots/logic/pinStyles'
+import { extraTypesOf } from '@/features/spots/logic/spotTypes'
 import { distanceMeters, formatDistance, sortSpots, spotsInBounds } from '@/features/spots/logic/geo'
 import type { SpotLight } from '@/types/models'
 
@@ -276,6 +277,7 @@ export function MapScreen() {
                   spot={selectedSpot}
                   type={typesById.get(selectedSpot.spot_type_id)}
                   subtype={selectedSpot.subtype_id ? subtypesById.get(selectedSpot.subtype_id) : null}
+                  extraTypes={extraTypesOf(selectedSpot.extra_type_ids, typesById)}
                   onClose={() => selectSpot(null)}
                 />
               </div>

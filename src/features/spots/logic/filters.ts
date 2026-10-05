@@ -29,6 +29,12 @@ export function normalizeText(text: string): string {
     .trim()
 }
 
+/** Vrai si l'un des types du spot (principal ou supplémentaire) figure dans la sélection. */
+export function hasAnyType(spot: Pick<SpotLight, 'spot_type_id' | 'extra_type_ids'>, typeIds: ReadonlySet<string>): boolean {
+  // "?? []" : une donnée gardée hors ligne par une ancienne version n'a pas cette liste.
+  return typeIds.has(spot.spot_type_id) || (spot.extra_type_ids ?? []).some((id) => typeIds.has(id))
+}
+
 /** Vrai si le nom contient tous les mots de la recherche, sans tenir compte des accents ni de la casse. */
 export function matchesSearch(name: string, search: string): boolean {
   const query = normalizeText(search)
@@ -47,7 +53,7 @@ export function applyFilters(spots: SpotLight[], filters: SpotFilters): SpotLigh
 
   return spots.filter(
     (spot) =>
-      (typeIds.size === 0 || typeIds.has(spot.spot_type_id)) && matchesSearch(spot.name, filters.search),
+      (typeIds.size === 0 || hasAnyType(spot, typeIds)) && matchesSearch(spot.name, filters.search),
   )
 }
 

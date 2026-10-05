@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { ChevronRight } from 'lucide-react'
 import { SpotIcon } from '@/features/spots/components/SpotIcon'
 import { UNKNOWN_TYPE_COLOR } from '@/features/spots/logic/spotIcons'
+import { typesLabel } from '@/features/spots/logic/spotTypes'
 import { publicPhotoUrl } from '@/lib/storageUrls'
 import type { SpotLight, SpotSubtype, SpotType } from '@/types/models'
 
@@ -9,13 +10,22 @@ interface SpotListItemProps {
   spot: SpotLight
   type: SpotType | undefined
   subtype?: SpotSubtype
+  /** Types supplémentaires du spot. */
+  extraTypes?: SpotType[]
   /** Texte affiché à droite du type ("1,2 km"). */
   distanceLabel?: string
   onSelect: (spot: SpotLight) => void
 }
 
 /** Une ligne de la liste des spots : vignette, nom, type, adresse. */
-export const SpotListItem = memo(function SpotListItem({ spot, type, subtype, distanceLabel, onSelect }: SpotListItemProps) {
+export const SpotListItem = memo(function SpotListItem({
+  spot,
+  type,
+  subtype,
+  extraTypes,
+  distanceLabel,
+  onSelect,
+}: SpotListItemProps) {
   const color = type?.color ?? UNKNOWN_TYPE_COLOR
   const thumbUrl = publicPhotoUrl(spot.cover_thumb_path)
 
@@ -42,7 +52,7 @@ export const SpotListItem = memo(function SpotListItem({ spot, type, subtype, di
         <span className="min-w-0 flex-1">
           <span className="block truncate text-lg leading-snug font-semibold">{spot.name}</span>
           <span className="block truncate text-base" style={{ color }}>
-            {type?.label ?? 'Type inconnu'}
+            {typesLabel(type, extraTypes)}
             {subtype && ` · ${subtype.label}`}
             {distanceLabel && <span className="text-ink-soft"> · {distanceLabel}</span>}
           </span>

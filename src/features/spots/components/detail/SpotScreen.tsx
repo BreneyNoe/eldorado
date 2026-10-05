@@ -17,6 +17,7 @@ import { SpotTypeBadge } from '@/features/spots/components/SpotTypeBadge'
 import { useDeleteSpotPhoto, useSetCoverPhoto, useSpot, useSpotPhotos } from '@/features/spots/hooks/useSpotDetail'
 import { useSpotSubtypes, useSpotTypes } from '@/features/spots/hooks/useSpotQueries'
 import { directionsUrl } from '@/features/spots/logic/directions'
+import { allTypeIds, extraTypesOf } from '@/features/spots/logic/spotTypes'
 import { canDeletePhoto, canEditSpot } from '@/features/spots/logic/permissions'
 import { UNKNOWN_TYPE_COLOR } from '@/features/spots/logic/spotIcons'
 import { UpdatesSection } from '@/features/updates/components/UpdatesSection'
@@ -87,6 +88,8 @@ export function SpotScreen() {
   }
 
   const type = typesQuery.data?.find((candidate) => candidate.id === spot.spot_type_id)
+  // "?? []" : une fiche gardée hors ligne par une ancienne version n'a pas cette liste.
+  const extraTypeIds = (spot.extra_types ?? []).map((entry) => entry.spot_type_id)
   const photos = photosQuery.data ?? []
   const cover = photos.find((photo) => photo.id === spot.cover_photo_id) ?? photos[0]
   const editable = canEditSpot(viewer, spot)
@@ -164,7 +167,11 @@ export function SpotScreen() {
       <main className="safe-x">
         <div className="mx-auto w-full max-w-md space-y-7 px-4 pt-5 pb-10">
           <header>
-            <SpotTypeBadge type={type} subtype={subtypesQuery.data?.find((candidate) => candidate.id === spot.subtype_id)} />
+            <SpotTypeBadge
+              type={type}
+              subtype={subtypesQuery.data?.find((candidate) => candidate.id === spot.subtype_id)}
+              extraTypes={extraTypesOf(extraTypeIds, new Map((typesQuery.data ?? []).map((entry) => [entry.id, entry])))}
+            />
             <h1 className="mt-2 text-3xl leading-tight font-semibold">{spot.name}</h1>
 
             <ul className="mt-4 space-y-2 text-base">
@@ -222,7 +229,7 @@ export function SpotScreen() {
 
           <UpdatesSection spotId={spot.id} viewer={viewer} />
 
-          <RatingsSection spotId={spot.id} spotTypeId={spot.spot_type_id} userId={session.userId} />
+          <RatingsSection spotId={spot.id} spotTypeIds={allTypeIds(spot.spot_type_id, extraTypeIds)} userId={session.userId} />
 
           <section aria-labelledby="spot-photos">
             <h2 id="spot-photos" className="text-xl font-semibold">

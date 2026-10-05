@@ -12,6 +12,8 @@ import type { RatingCategory, RatingsInput, RatingSummary } from '@/types/models
 export interface RatingRow {
   categoryId: string
   label: string
+  /** Nom du type auquel appartient la catégorie, quand le spot en a plusieurs. Sinon null. */
+  group: string | null
   /** Moyenne arrondie à une décimale, ou null si personne n'a noté. */
   average: number | null
   votes: number
@@ -20,32 +22,43 @@ export interface RatingRow {
 }
 
 /**
- * Une ligne par catégorie active du type du spot, dans l'ordre d'affichage.
- * Les catégories d'un autre type sont ignorées, même si des données en parlent.
+ * Une ligne par catégorie active des types du spot : d'abord celles du type
+ * principal, puis celles de chaque type supplémentaire, chacune dans son ordre
+ * d'affichage. Les catégories d'un autre type sont ignorées, même si des
+ * données en parlent.
+ *
+ * @param spotTypeIds  le type principal, puis les types supplémentaires (un seul id accepté)
+ * @param typeLabels   nom de chaque type : sert à intituler les groupes quand il y en a plusieurs
  */
 export function buildRatingRows(
-  spotTypeId: string,
+  spotTypeIds: string | string[],
   categories: RatingCategory[],
   summary: Pick<RatingSummary, 'category_id' | 'average' | 'votes'>[],
   myRatings: { category_id: string; value: number }[],
+  typeLabels: ReadonlyMap<string, string> = new Map(),
 ): RatingRow[] {
+  const typeIds = [...new Set(Array.isArray(spotTypeIds) ? spotTypeIds : [spotTypeIds])]
   const summaryByCategory = new Map(summary.map((entry) => [entry.category_id, entry]))
   const mineByCategory = new Map(myRatings.map((rating) => [rating.category_id, rating.value]))
 
-  return categories
-    .filter((category) => category.spot_type_id === spotTypeId && category.is_active)
-    .sort((a, b) => a.sort_order - b.sort_order || a.label.localeCompare(b.label, 'fr'))
-    .map((category) => {
-      const entry = summaryByCategory.get(category.id)
-      const votes = entry?.votes ?? 0
-      return {
-        categoryId: category.id,
-        label: category.label,
-        average: votes > 0 && entry ? Number(entry.average) : null,
-        votes,
-        mine: mineByCategory.get(category.id) ?? null,
-      }
-    })
+  return typeIds.flatMap((typeId) =>
+    categories
+      .filter((category) => category.spot_type_id === typeId && category.is_active)
+      .sort((a, b) => a.sort_order - b.sort_order || a.label.localeCompare(b.label, 'fr'))
+      .map((category) => {
+        const entry = summaryByCategory.get(category.id)
+        const votes = entry?.votes ?? 0
+        return {
+          categoryId: category.id,
+          label: category.label,
+          // Un seul type : pas d'intitulé de groupe, l'affichage reste celui d'avant.
+          group: typeIds.length > 1 ? (typeLabels.get(typeId) ?? null) : null,
+          average: votes > 0 && entry ? Number(entry.average) : null,
+          votes,
+          mine: mineByCategory.get(category.id) ?? null,
+        }
+      }),
+  )
 }
 
 /** "4,3" : une décimale, virgule française. */

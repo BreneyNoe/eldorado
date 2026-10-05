@@ -16,7 +16,7 @@ const STORAGE_KEY = 'spots.query-cache'
  * incompatible : les copies enregistrées par une version précédente de
  * l'application sont alors ignorées.
  */
-export const CACHE_VERSION = '1'
+export const CACHE_VERSION = '2'
 
 export const queryPersister: Persister = {
   // IndexedDB peut être indisponible (navigation privée) : l'application
