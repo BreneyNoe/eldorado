@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Avatar } from '@/components/Avatar'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Notice } from '@/components/Notice'
 import { useRemoveUserAvatar, useUpdateUser, useUserAvatars, useUsers } from '@/features/admin/hooks/useAdmin'
 import { useCurrentUser } from '@/features/auth/hooks/AuthContext'
+import { UserLink } from '@/features/users/components/UserLink'
 import { formatInstantDay } from '@/lib/formatDate'
 import type { UserRole } from '@/types/database'
 import type { AdminUser } from '@/types/models'
@@ -61,13 +61,12 @@ export function AdminUsers() {
           const hasAvatar = Boolean(avatar?.avatar_path || avatar?.avatar_icon)
           return (
             <li key={user.id} className="py-4">
-              <div className="flex items-center gap-3">
-                <Avatar person={{ display_name: user.display_name, ...avatar }} />
+              <UserLink userId={user.id} person={{ display_name: user.display_name, ...avatar }} size="md">
                 <p className="min-w-0 text-lg font-semibold">
                   {user.display_name}
                   {isMe && <span className="font-normal text-ink-soft"> (toi)</span>}
                 </p>
-              </div>
+              </UserLink>
               <p className="text-base break-all text-ink-soft">{user.email}</p>
               <p className="mt-1 text-base">
                 {isAdmin ? 'Administrateur' : 'Membre'}

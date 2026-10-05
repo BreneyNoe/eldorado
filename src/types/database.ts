@@ -500,6 +500,10 @@ export type Database = {
         Args: { p_spot_id: string; p_type_ids: string[] }
         Returns: undefined
       }
+      user_stats: {
+        Args: { p_user_id: string }
+        Returns: { spot_count: number; photo_count: number; update_count: number }[]
+      }
       ping: {
         Args: Record<string, never>
         Returns: boolean

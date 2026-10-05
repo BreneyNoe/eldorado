@@ -24,6 +24,7 @@ drop policy if exists spot_photos_objects_delete on storage.objects;
 drop function if exists public.nearby_spots(double precision, double precision, integer, uuid);
 drop function if exists public.spots_in_bbox(double precision, double precision, double precision, double precision, uuid[], integer);
 drop function if exists public.ping();
+drop function if exists public.user_stats(uuid);
 drop function if exists public.set_spot_extra_types(uuid, uuid[]);
 drop function if exists public.create_spot(uuid, text, double precision, double precision, text, text, text, date, jsonb, uuid, uuid[]);
 drop function if exists public.create_spot(uuid, text, double precision, double precision, text, text, text, date, jsonb);

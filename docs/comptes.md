@@ -66,13 +66,28 @@ Un ornement entoure l'avatar de ceux qui publient des spots. Il change avec le n
 | 15 | Pionnier (Argent) | Tourbillon d'argent |
 | 30 | Expert (Or) | Couronne d'or tressée |
 | 50 | Gardien des lieux (Platine) | Tourbillon d'argent serti de rubis |
-| 80 | Légende (Acier noir et argent) | Roue dentée au cadran romain |
+| 80 | Légende (Acier noir et argent) | Grande roue dentée d'acier, au cadran romain |
 
 - L'ornement apparaît partout où l'avatar apparaît. L'avatar garde sa taille et l'ornement s'ajoute autour ; sur le bouton rond du compte, le tout est réduit pour tenir dans le bouton.
+- L'ornement du dernier rang est très large (plus de trois fois l'avatar). Pour qu'il ne prenne pas toute la place, l'ensemble est alors plafonné à 2,4 fois la taille d'un avatar nu, et à 320 px de large.
 - **Une annonce** félicite l'utilisateur quand il atteint un nouveau rang, y compris à l'instant où il publie le spot décisif. Elle ne s'affiche qu'une fois, quel que soit l'appareil : le dernier rang annoncé est retenu dans son profil.
 - L'écran **Mon compte** indique le rang, le nombre de spots publiés et ce qui manque pour le suivant.
 - Seuls les spots créés comptent, pas les photos ni les updates. Un spot supprimé n'est plus compté : un rang peut donc se perdre.
 - Le compte est tenu par la base, à chaque création ou suppression de spot. Personne ne peut le modifier à la main, pas même un administrateur depuis l'application.
+
+## Profil d'un utilisateur
+
+Toucher l'avatar ou le nom de quelqu'un ouvre son profil : sur une fiche (« Ajouté par… »), dans le journal, sous une photo dans la visionneuse, et dans la liste des comptes de l'administration. Depuis **Mon compte**, « Voir mon profil » ouvre le sien.
+
+Le profil montre :
+
+- l'avatar et son ornement, en grand ;
+- le rang, le rôle d'administrateur le cas échéant, et la date d'inscription ;
+- trois chiffres : spots publiés, photos ajoutées, updates publiés ;
+- le prochain ornement à obtenir ;
+- les cinq derniers spots de la personne, avec un lien vers chacun.
+
+Tous les membres actifs voient le profil de tous. Le profil ne montre ni l'adresse e-mail, ni les notes données. Un compte supprimé n'a plus de profil : son nom n'est alors pas cliquable.
 
 ### Changer un seuil, un nom ou un ornement
 

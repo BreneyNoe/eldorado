@@ -5,6 +5,7 @@ import { FullScreenLoader } from '@/components/FullScreenLoader'
 import { AccountScreen } from '@/features/auth/components/AccountScreen'
 import { LoginScreen } from '@/features/auth/components/LoginScreen'
 import { RequireAdmin } from '@/features/auth/components/RequireAdmin'
+import { UserScreen } from '@/features/users/components/UserScreen'
 import { SignUpScreen } from '@/features/auth/components/SignUpScreen'
 import { RequireAuth } from '@/features/auth/components/RequireAuth'
 import { DiagnosticScreen } from '@/features/diagnostic/components/DiagnosticScreen'
@@ -62,6 +63,7 @@ export const router = createHashRouter([
             HydrateFallback: FullScreenLoader,
           },
           { path: '/account', element: <AccountScreen /> },
+          { path: '/user/:userId', element: <UserScreen /> },
           {
             // Administration : un garde de plus, puis un cadre commun à onglets.
             element: <RequireAdmin />,

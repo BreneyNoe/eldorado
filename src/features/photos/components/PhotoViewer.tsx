@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
-import { Avatar } from '@/components/Avatar'
+import { UserLink } from '@/features/users/components/UserLink'
 import type { SpotPhotoWithAuthor } from '@/features/spots/api/spotDetailApi'
 import { formatInstantDay } from '@/lib/formatDate'
 import { publicPhotoUrl } from '@/lib/storageUrls'
@@ -158,14 +158,13 @@ export function PhotoViewer({
 
       <div className="safe-bottom safe-x shrink-0">
         <div className="mx-auto w-full max-w-md space-y-3 px-4 pt-3 pb-4">
-          <p className="flex items-center gap-2.5 text-base text-paper/80">
-            <Avatar person={photo.uploader} size="sm" />
+          <UserLink userId={photo.uploaded_by} person={photo.uploader} className="text-base text-paper/80">
             <span>
             Ajoutée par {photo.uploader?.display_name ?? 'un utilisateur supprimé'}
             {addedOn && ` le ${addedOn}`}
             {isCover && ' · Photo de couverture'}
             </span>
-          </p>
+          </UserLink>
           {error && (
             <p role="alert" className="rounded-xl bg-paper px-4 py-3 text-base font-medium text-danger">
               {error}

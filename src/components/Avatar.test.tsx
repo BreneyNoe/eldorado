@@ -70,11 +70,20 @@ describe('Avatar', () => {
   })
 
   it('par défaut l\'avatar garde sa taille et l\'ornement s\'ajoute autour', () => {
-    const { container } = render(<Avatar person={{ display_name: 'Camille', spot_count: 80 }} size="md" />)
+    const { container } = render(<Avatar person={{ display_name: 'Camille', spot_count: 50 }} size="md" />)
     const box = container.firstElementChild as HTMLElement
     const face = box.firstElementChild as HTMLElement
     expect(face.style.width).toBe('40px')
-    expect(Number.parseFloat(box.style.width)).toBeGreaterThan(80)
+    expect(Number.parseFloat(box.style.width)).toBeGreaterThan(70)
+  })
+
+  it('l\'ornement du dernier rang, très large, est plafonné : l\'ensemble rétrécit un peu', () => {
+    const { container } = render(<Avatar person={{ display_name: 'Camille', spot_count: 80 }} size="md" />)
+    const box = container.firstElementChild as HTMLElement
+    const face = box.firstElementChild as HTMLElement
+    expect(box.style.width).toBe('96px')
+    expect(Number.parseFloat(face.style.width)).toBeLessThan(40)
+    expect(Number.parseFloat(face.style.width)).toBeGreaterThan(25)
   })
 
   it('dans un emplacement fixe, le tout tient dans la taille demandée', () => {

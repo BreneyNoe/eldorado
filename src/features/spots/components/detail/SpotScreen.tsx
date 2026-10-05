@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Icon } from '@iconify/react'
 import { ArrowLeft, CalendarDays, Copy, Map as MapIcon, MapPin, Pencil } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router'
-import { Avatar } from '@/components/Avatar'
 import { Button } from '@/components/Button'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { FullScreenLoader } from '@/components/FullScreenLoader'
@@ -18,6 +17,7 @@ import { SpotTypeBadge } from '@/features/spots/components/SpotTypeBadge'
 import { useDeleteSpotPhoto, useSetCoverPhoto, useSpot, useSpotPhotos } from '@/features/spots/hooks/useSpotDetail'
 import { useSpotSubtypes, useSpotTypes } from '@/features/spots/hooks/useSpotQueries'
 import { directionsUrl } from '@/features/spots/logic/directions'
+import { UserLink } from '@/features/users/components/UserLink'
 import { allTypeIds, extraTypesOf } from '@/features/spots/logic/spotTypes'
 import { canDeletePhoto, canEditSpot } from '@/features/spots/logic/permissions'
 import { UNKNOWN_TYPE_COLOR } from '@/features/spots/logic/spotIcons'
@@ -188,12 +188,13 @@ export function SpotScreen() {
                   <span>Visité le {visitedOn}</span>
                 </li>
               )}
-              <li className="flex items-center gap-2.5 text-ink-soft">
-                <Avatar person={spot.creator} size="sm" />
-                <span>
-                  Ajouté par {spot.creator?.display_name ?? 'un utilisateur supprimé'}
-                  {createdOn && ` le ${createdOn}`}
-                </span>
+              <li className="text-ink-soft">
+                <UserLink userId={spot.created_by} person={spot.creator}>
+                  <span>
+                    Ajouté par {spot.creator?.display_name ?? 'un utilisateur supprimé'}
+                    {createdOn && ` le ${createdOn}`}
+                  </span>
+                </UserLink>
               </li>
             </ul>
           </header>

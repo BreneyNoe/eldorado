@@ -142,6 +142,9 @@ export function AccountScreen() {
     <SheetLayout title="Mon compte" back={{ to: '/', label: 'Retour' }}>
       <p className="text-lg font-medium break-all">{session.email}</p>
       <p className="mt-1 text-base text-ink-soft">{isAdmin ? 'Administrateur' : 'Membre'}</p>
+      <Link to={`/user/${session.userId}`} className="mt-3 inline-flex h-11 items-center text-lg font-semibold underline underline-offset-4">
+        Voir mon profil
+      </Link>
 
       <section className="mt-8 border-t border-line pt-8">
         <AvatarEditor profile={profile} />

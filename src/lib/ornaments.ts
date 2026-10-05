@@ -20,7 +20,7 @@ export const ORNAMENTS: Record<AvatarRankId, { src: string; scale: number }> = {
   silver: { src: silver, scale: 1.5711 },
   gold: { src: gold, scale: 1.7635 },
   platinum: { src: platinum, scale: 1.8796 },
-  dark: { src: dark, scale: 2.2239 },
+  dark: { src: dark, scale: 3.257 },
 }
 
 /**
@@ -33,4 +33,23 @@ const OVERLAP = 0.975
 /** Largeur totale, ornement compris, d'un avatar de ce diamètre. Fonction pure. */
 export function ornamentSize(rank: AvatarRankId, faceSize: number): number {
   return faceSize * ORNAMENTS[rank].scale * OVERLAP
+}
+
+/** Un avatar orné ne dépasse jamais cette proportion de sa taille sans ornement... */
+const MAX_GROWTH = 2.4
+/** ...ni cette largeur, pour tenir sur un écran de téléphone. */
+const MAX_WIDTH = 320
+
+/**
+ * Tailles d'un avatar orné quand l'ornement s'ajoute autour de lui.
+ *
+ * En principe l'avatar garde son diamètre. Mais un ornement très large (celui
+ * du dernier rang fait plus de trois fois l'avatar) prendrait trop de place :
+ * au-delà du plafond, c'est l'ensemble qui est réduit, avatar compris.
+ * Fonction pure.
+ */
+export function ornamentLayout(rank: AvatarRankId, requestedFace: number): { face: number; box: number } {
+  const natural = ornamentSize(rank, requestedFace)
+  const box = Math.min(natural, requestedFace * MAX_GROWTH, MAX_WIDTH)
+  return { face: requestedFace * (box / natural), box }
 }

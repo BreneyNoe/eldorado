@@ -1,10 +1,10 @@
 import { useState, type FormEvent } from 'react'
-import { Avatar } from '@/components/Avatar'
 import { Button } from '@/components/Button'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
 import { Notice } from '@/components/Notice'
 import { TextAreaField } from '@/components/TextField'
 import { TEXT_LIMITS } from '@/config/constants'
+import { UserLink } from '@/features/users/components/UserLink'
 import type { SpotUpdateWithAuthor } from '@/features/updates/api/updatesApi'
 import {
   useAddSpotUpdate,
@@ -104,8 +104,7 @@ export function UpdatesSection({ spotId, viewer }: UpdatesSectionProps) {
 
               return (
                 <li key={update.id} className="py-4">
-                  <div className="flex items-center gap-2.5">
-                    <Avatar person={update.author} size="sm" />
+                  <UserLink userId={update.author_id} person={update.author}>
                     <p className="min-w-0 text-base">
                       <span className="font-semibold">{formatInstantDateTime(update.created_at)}</span>
                       <span className="text-ink-soft">
@@ -114,7 +113,7 @@ export function UpdatesSection({ spotId, viewer }: UpdatesSectionProps) {
                         {wasEdited(update) && ' · modifié'}
                       </span>
                     </p>
-                  </div>
+                  </UserLink>
 
                   {isEditing ? (
                     <div className="mt-2 space-y-3">
