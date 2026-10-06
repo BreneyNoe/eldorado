@@ -46,7 +46,7 @@ Le script `supabase/admin/verify_install.sql` contrôle le reste : chaque ligne 
 - **Chargement en deux temps.** L'écran de connexion est léger. La carte (MapLibre, environ 1 Mo) n'est chargée qu'après la connexion ; l'administration et la création, seulement quand on les ouvre.
 - **Après la première visite**, tout le code est gardé sur l'appareil : les ouvertures suivantes ne retéléchargent rien.
 - **Carte.** Tous les spots sont chargés en une fois sous une forme légère, puis regroupés par le navigateur. Les marqueurs sont dessinés par la carte elle-même, pas comme des éléments de page.
-- **Photos.** Une miniature de 400 px dans les listes et les aperçus, l'image de 1 600 px seulement dans la fiche et la visionneuse. Les images hors écran ne sont chargées qu'à l'approche.
+- **Photos.** Une miniature de 400 px dans les listes et les aperçus, l'image de 1 280 px seulement dans la fiche et la visionneuse. Les images hors écran ne sont chargées qu'à l'approche.
 - **Listes.** 30 lignes à la fois, 20 updates à la fois.
 - **Réseau.** Une donnée chargée est réutilisée pendant une minute avant d'être redemandée.
 

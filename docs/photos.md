@@ -6,7 +6,7 @@ Pour chaque photo, l'application fabrique deux fichiers JPEG sur le téléphone,
 
 | Fichier | Taille | Usage |
 |---|---|---|
-| Image standard | 1 600 px sur le plus grand côté | Fiche du spot, galerie |
+| Image standard | 1 280 px sur le plus grand côté | Fiche du spot, galerie |
 | Miniature | 400 px sur le plus grand côté | Carte, listes, aperçus |
 
 La photo d'origine n'est jamais envoyée. C'est ce qui permet de tenir dans le gigaoctet de stockage gratuit de Supabase.
@@ -35,6 +35,12 @@ Ces limites viennent de Safari, pas de l'application.
 - **Format HEIC** : Safari le convertit généralement en JPEG au moment du choix. Sur un autre navigateur, un fichier HEIC peut être illisible ; il est alors écarté avec un message.
 
 Dans tous les cas, le placement manuel sur la carte reste disponible.
+
+## Capacité du stockage
+
+Avec ces réglages, une photo occupe en moyenne 150 à 250 Ko (image standard et miniature réunies), selon son contenu. Le gigaoctet gratuit de Supabase accueille donc de l'ordre de 4 000 à 6 000 photos.
+
+Pour serrer ou desserrer la compression : `src/config/constants.ts`, bloc `IMAGE_SETTINGS`. Un réglage ne vaut que pour les photos envoyées ensuite : celles déjà en ligne ne sont pas recompressées.
 
 ## Limite par spot
 

@@ -30,3 +30,6 @@ dist-ssr
 
 # Tests
 coverage
+
+# Sauvegardes : elles contiennent les e-mails des membres et toutes leurs photos (jamais dans Git)
+backups

@@ -89,3 +89,4 @@ Coche au fur et à mesure. En cas d'échec, note l'écran, le message exact, et 
 - [ ] Sur GitHub, onglet Actions : la dernière publication et la tâche « Garder Supabase éveillé » sont vertes.
 - [ ] Dans Supabase, le script `supabase/admin/verify_install.sql` n'affiche que des lignes `ok = true`.
 - [ ] Administration → Réglages : pas de fichiers orphelins, ou les supprimer.
+- [ ] `npm run backup` se termine par « Sauvegarde complete. » (voir [sauvegarde.md](sauvegarde.md)).

@@ -32,7 +32,7 @@ La création et la gestion des comptes sont décrites dans [docs/comptes.md](doc
 
 Le traitement des photos et ses limites sur iPhone sont décrits dans [docs/photos.md](docs/photos.md).
 
-Autres guides : [tests](docs/tests.md), [recette en conditions réelles](docs/recette.md), [mise en ligne](docs/deploiement.md), [sécurité et performances](docs/securite.md), [installation sur iPhone et usage hors ligne](docs/pwa.md), [administration](docs/administration.md), [reprendre un point de Google Maps](docs/google-maps.md), [vue satellite](docs/vue-satellite.md), [types et sous-catégories](docs/types-et-sous-categories.md).
+Autres guides : [sauvegarde](docs/sauvegarde.md), [tests](docs/tests.md), [recette en conditions réelles](docs/recette.md), [mise en ligne](docs/deploiement.md), [sécurité et performances](docs/securite.md), [installation sur iPhone et usage hors ligne](docs/pwa.md), [administration](docs/administration.md), [reprendre un point de Google Maps](docs/google-maps.md), [vue satellite](docs/vue-satellite.md), [types et sous-catégories](docs/types-et-sous-categories.md).
 
 ## Commandes
 

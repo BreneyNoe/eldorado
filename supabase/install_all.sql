@@ -1,7 +1,7 @@
 -- =====================================================================
 -- INSTALLATION COMPLETE EN UN SEUL COLLER
 -- =====================================================================
--- Ce fichier est la simple concatenation des 20 fichiers du dossier
+-- Ce fichier est la simple concatenation des 21 fichiers du dossier
 -- supabase/migrations, dans l'ordre, dans UNE seule transaction :
 -- soit tout s'installe, soit rien n'est modifie.
 --
@@ -2597,5 +2597,18 @@ grant execute on function public.user_stats(uuid) to authenticated, service_role
 
 update public.spot_subtypes set icon = 'spots:rail' where key = 'rails';
 update public.spot_subtypes set label = 'Curbs' where key = 'ledges_curbs';
+
+-- >>>>>>>>>> 20261016100000_swap_curb_icons.sql >>>>>>>>>>
+
+-- =====================================================================
+-- MIGRATION 21 : ICONES DE "CURBS" ET "PLANS INCLINES" INTERVERTIES
+-- =====================================================================
+-- A executer une fois dans Supabase > SQL Editor sur une base deja
+-- installee. Sans danger si on le relance : chaque icone est fixee par
+-- son nom, et non echangee.
+-- =====================================================================
+
+update public.spot_subtypes set icon = 'pinhead:flush-curb'   where key = 'ledges_curbs';
+update public.spot_subtypes set icon = 'pinhead:lowered-curb' where key = 'plans_inclines';
 
 commit;

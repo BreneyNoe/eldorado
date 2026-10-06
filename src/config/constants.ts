@@ -12,11 +12,12 @@ export const STORAGE_BUCKET = 'spot-photos'
 
 export const IMAGE_SETTINGS = {
   /** Plus grand côté de l'image standard, en pixels. */
-  standardMaxEdge: 1600,
-  standardQuality: 0.8,
+  // 1 280 px : net en plein écran sur un téléphone, et nettement plus léger que 1 600 px.
+  standardMaxEdge: 1280,
+  standardQuality: 0.7,
   /** Plus grand côté de la miniature, en pixels. */
   thumbMaxEdge: 400,
-  thumbQuality: 0.7,
+  thumbQuality: 0.65,
   /** Limite imposée par le bucket : 2 Mo par fichier. */
   maxUploadBytes: 2 * 1024 * 1024,
   /**
