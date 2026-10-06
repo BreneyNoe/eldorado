@@ -23,10 +23,13 @@ describe('icônes embarquées', () => {
   it('contient les icônes des types, des sous-catégories et du bouton "Y aller"', () => {
     expect(Object.keys(EMBEDDED_ICONIFY_ICONS).sort()).toEqual([
       'boxicons:swimming',
+      'fluent-emoji-high-contrast:tent',
       'fluent-emoji-high-contrast:zany-face',
       'game-icons:castle-ruins',
       'game-icons:fishing',
+      'game-icons:forest-camp',
       'gcp:google-maps-platform',
+      'iconmind:hammock-outline-thin',
       'lucide-lab:stairs-arrow-down-left',
       'material-symbols-light:escalator-outline',
       'pinhead:flush-curb',

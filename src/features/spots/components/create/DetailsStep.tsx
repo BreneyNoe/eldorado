@@ -10,7 +10,7 @@ import { SubtypePicker } from '@/features/spots/components/create/SubtypePicker'
 import { TypePicker } from '@/features/spots/components/create/TypePicker'
 import { SpotTypeBadge } from '@/features/spots/components/SpotTypeBadge'
 import { todayIso, type SpotDraft, type SpotDraftErrors } from '@/features/spots/logic/spotDraft'
-import { allTypeIds } from '@/features/spots/logic/spotTypes'
+import { allTypeIds, isSubtypeRequired } from '@/features/spots/logic/spotTypes'
 import type { RatingCategory, SpotSubtype, SpotType } from '@/types/models'
 
 interface DetailsStepProps {
@@ -170,6 +170,8 @@ export function DetailsStep({
               color={types.find((type) => type.id === typeSubtypes[0]?.spot_type_id)?.color ?? currentType.color}
               value={draft.subtypeId}
               onChange={(subtypeId) => onChange({ subtypeId })}
+              // Aucun des types du spot n'impose de sous-catégorie : ce sont des options à cocher.
+              optional={!isSubtypeRequired(spotTypeIds, lockedType ? [lockedType, ...types] : types, subtypes)}
               // En modification, la sous-catégorie reste facultative : on peut la retirer.
               clearable={Boolean(lockedType)}
               error={errors.subtypeId}

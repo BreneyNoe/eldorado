@@ -79,5 +79,6 @@ docs/            documentation
 
 - Fond de carte : © OpenStreetMap, servi par OpenFreeMap. Vue satellite : © IGN.
 - Icônes « Pêche » et « Urbex » : [Game-icons.net](https://game-icons.net), licence CC BY 3.0.
-- Autres icônes : Lucide (ISC), Lucide Lab (ISC), Pinhead (CC0), Boxicons (MIT), Material Symbols (Apache 2.0), Fluent Emoji (MIT), Google Cloud Icons (Apache 2.0).
+- Icône « Bivouac » : [Game-icons.net](https://game-icons.net), licence CC BY 3.0.
+- Autres icônes : Lucide (ISC), Lucide Lab (ISC), Pinhead (CC0), Iconmind (CC0), Boxicons (MIT), Material Symbols (Apache 2.0), Fluent Emoji (MIT), Google Cloud Icons (Apache 2.0).
 - Police : Barlow (SIL Open Font License).

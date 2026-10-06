@@ -40,6 +40,7 @@ Coche au fur et à mesure. En cas d'échec, note l'écran, le message exact, et 
 - [ ] Un spot proche d'un autre déclenche l'avertissement de doublon.
 - [ ] Type principal, puis un type supplémentaire : les catégories de notes des deux apparaissent.
 - [ ] Type Ride : une sous-catégorie est demandée ; « Rails » porte l'icône de la rampe.
+- [ ] Type Nature : la case « Bivouac » est facultative ; cochée, elle propose « Tente » et « Hamac ».
 - [ ] Notes avec une demi-étoile.
 - [ ] Le spot créé apparaît sur la carte, à la bonne place, avec la bonne icône.
 - [ ] Plus de 10 photos : les photos en trop sont refusées avec un message.

@@ -26,7 +26,7 @@ export function SpotTypeBadge({ type, subtype, extraTypes = [] }: SpotTypeBadgeP
       </span>
       <span>
         {typesLabel(type, extraTypes)}
-        {subtype && ` · ${subtype.label}`}
+        {subtype && ` · ${subtype.full_label ?? subtype.label}`}
       </span>
     </span>
   )

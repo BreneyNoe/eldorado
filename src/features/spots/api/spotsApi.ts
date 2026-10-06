@@ -2,6 +2,7 @@
  * Lecture et création des spots, de leurs types et de leurs catégories de notation.
  * Toutes les fonctions lèvent une AppError en cas d'échec.
  */
+import { subtypeFullLabel } from '@/features/spots/logic/spotTypes'
 import { toAppError } from '@/lib/errors'
 import { fetchAllPages } from '@/lib/pagination'
 import { supabase } from '@/lib/supabase'
@@ -38,7 +39,8 @@ export async function fetchSpotsLight(): Promise<SpotLight[]> {
 export async function fetchSpotSubtypes(): Promise<SpotSubtype[]> {
   const { data, error } = await supabase.from('spot_subtypes').select('*').order('sort_order')
   if (error) throw toAppError(error)
-  return data
+  // Le libellé complet ("Bivouac · Tente") est préparé une fois ici, pour tous les écrans.
+  return data.map((subtype) => ({ ...subtype, full_label: subtypeFullLabel(subtype, data) }))
 }
 
 /** Toutes les catégories de notation, tous types confondus, dans leur ordre d'affichage. */

@@ -53,7 +53,7 @@ export const SpotListItem = memo(function SpotListItem({
           <span className="block truncate text-lg leading-snug font-semibold">{spot.name}</span>
           <span className="block truncate text-base" style={{ color }}>
             {typesLabel(type, extraTypes)}
-            {subtype && ` · ${subtype.label}`}
+            {subtype && ` · ${subtype.full_label ?? subtype.label}`}
             {distanceLabel && <span className="text-ink-soft"> · {distanceLabel}</span>}
           </span>
           {spot.address && <span className="block truncate text-base text-ink-soft">{spot.address}</span>}

@@ -84,6 +84,7 @@ export function makeSpotType(key: string, overrides: Partial<SpotType> = {}): Sp
     icon: 'trees',
     sort_order: 0,
     is_active: true,
+    subtype_optional: false,
     created_at: '2026-10-01T10:00:00Z',
     updated_at: '2026-10-01T10:00:00Z',
     ...overrides,

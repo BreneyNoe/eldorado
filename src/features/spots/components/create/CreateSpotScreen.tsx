@@ -32,7 +32,7 @@ import {
   type SpotDraft,
   type SpotDraftErrors,
 } from '@/features/spots/logic/spotDraft'
-import { allTypeIds } from '@/features/spots/logic/spotTypes'
+import { allTypeIds, isSubtypeRequired } from '@/features/spots/logic/spotTypes'
 
 const STEP_PARAM = 'etape'
 const POSITION_STEP = 'position'
@@ -163,10 +163,11 @@ export function CreateSpotScreen() {
   }
 
   function handleSubmit() {
-    // Un type qui propose des sous-catégories en exige une à la création.
-    const spotTypeIds = allTypeIds(draft.spotTypeId, draft.extraTypeIds)
-    const subtypeRequired = (subtypesQuery.data ?? []).some(
-      (subtype) => spotTypeIds.includes(subtype.spot_type_id) && subtype.is_active,
+    // Un type qui propose des sous-catégories en exige une à la création, sauf s'il les rend facultatives (Nature).
+    const subtypeRequired = isSubtypeRequired(
+      allTypeIds(draft.spotTypeId, draft.extraTypeIds),
+      typesQuery.data ?? [],
+      subtypesQuery.data ?? [],
     )
     const validation = validateSpotDraft({ ...draft, address: addressValue }, new Date(), { subtypeRequired })
     setErrors(validation)

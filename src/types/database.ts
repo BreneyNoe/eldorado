@@ -63,6 +63,8 @@ export type Database = {
           icon: string
           sort_order: number
           is_active: boolean
+          /** Vrai si la sous-catégorie est une option que l'on coche, et non un choix obligatoire. */
+          subtype_optional: boolean
           created_at: string
           updated_at: string
         }
@@ -123,6 +125,8 @@ export type Database = {
           icon: string
           sort_order: number
           is_active: boolean
+          /** Sous-catégorie dont celle-ci est une précision ("Tente" précise "Bivouac"), ou null. */
+          parent_id: string | null
           created_at: string
           updated_at: string
         }

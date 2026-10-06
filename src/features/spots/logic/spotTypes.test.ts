@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { allTypeIds, extraTypesOf, typesLabel } from '@/features/spots/logic/spotTypes'
+import { allTypeIds, extraTypesOf, isSubtypeRequired, subtypeFullLabel, typesLabel } from '@/features/spots/logic/spotTypes'
 import { makeSpotType } from '@/test/renderWithProviders'
 
 const peche = makeSpotType('peche')
@@ -30,5 +30,53 @@ describe('typesLabel', () => {
     expect(typesLabel(peche)).toBe('Peche')
     expect(typesLabel(peche, [urbex])).toBe('Peche + Urbex')
     expect(typesLabel(undefined, [urbex])).toBe('Type inconnu + Urbex')
+  })
+})
+
+describe('isSubtypeRequired', () => {
+  const types = [
+    { id: 'nature', subtype_optional: true },
+    { id: 'ride', subtype_optional: false },
+    { id: 'peche', subtype_optional: false },
+  ]
+  const subtypes = [
+    { spot_type_id: 'nature', is_active: true },
+    { spot_type_id: 'ride', is_active: true },
+  ]
+
+  it('Ride impose une sous-catégorie, Nature la laisse au choix', () => {
+    expect(isSubtypeRequired(['ride'], types, subtypes)).toBe(true)
+    expect(isSubtypeRequired(['nature'], types, subtypes)).toBe(false)
+  })
+
+  it('un type sans sous-catégorie n\'impose rien', () => {
+    expect(isSubtypeRequired(['peche'], types, subtypes)).toBe(false)
+    expect(isSubtypeRequired([], types, subtypes)).toBe(false)
+  })
+
+  it('plusieurs types : obligatoire dès que l\'un d\'eux l\'impose', () => {
+    expect(isSubtypeRequired(['nature', 'ride'], types, subtypes)).toBe(true)
+    expect(isSubtypeRequired(['nature', 'peche'], types, subtypes)).toBe(false)
+  })
+
+  it('ignore les sous-catégories désactivées et les types inconnus', () => {
+    expect(isSubtypeRequired(['ride'], types, [{ spot_type_id: 'ride', is_active: false }])).toBe(false)
+    expect(isSubtypeRequired(['supprime'], types, [{ spot_type_id: 'supprime', is_active: true }])).toBe(false)
+  })
+})
+
+describe('subtypeFullLabel', () => {
+  const all = [
+    { id: 'bivouac', label: 'Bivouac' },
+    { id: 'tente', label: 'Tente' },
+  ]
+
+  it('une précision porte le nom de sa sous-catégorie', () => {
+    expect(subtypeFullLabel({ label: 'Tente', parent_id: 'bivouac' }, all)).toBe('Bivouac · Tente')
+  })
+
+  it('une sous-catégorie simple garde son nom', () => {
+    expect(subtypeFullLabel({ label: 'Bivouac', parent_id: null }, all)).toBe('Bivouac')
+    expect(subtypeFullLabel({ label: 'Tente', parent_id: 'inconnue' }, all)).toBe('Tente')
   })
 })

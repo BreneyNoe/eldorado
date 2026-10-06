@@ -215,7 +215,7 @@ export function AdminTypes() {
                       <p className="flex min-w-0 items-center gap-3 text-lg">
                         <SpotIcon name={subtype.icon} className="size-6 shrink-0" style={{ color: type.color }} />
                         <span className="truncate">
-                          {subtype.label}
+                          {subtype.full_label ?? subtype.label}
                           {!subtype.is_active && <span className="text-ink-soft"> (désactivée)</span>}
                         </span>
                       </p>

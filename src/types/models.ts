@@ -13,7 +13,10 @@ export type Profile = Tables['profiles']['Row']
 export type SpotType = Tables['spot_types']['Row']
 export type RatingCategory = Tables['rating_categories']['Row']
 /** Sous-catégorie d'un type de spot (par exemple « Rails » pour le type Ride). */
-export type SpotSubtype = Tables['spot_subtypes']['Row']
+export type SpotSubtype = Tables['spot_subtypes']['Row'] & {
+  /** Libellé avec celui de la sous-catégorie parente : "Bivouac · Tente". Calculé au chargement. */
+  full_label?: string
+}
 /** Un spot complet, sans la colonne PostGIS interne. */
 export type Spot = Omit<Tables['spots']['Row'], 'location'>
 export type SpotPhoto = Tables['spot_photos']['Row']

@@ -6,7 +6,35 @@ Trois tables décrivent ce qu'on peut créer et noter. Rien n'est écrit en dur 
 |---|---|---|
 | `spot_types` | Les types de spots | Nature, Pêche, Baignade, Urbex, Ride |
 | `rating_categories` | Les catégories de notes de chaque type | Ride : Originalité, Difficulté, Faisabilité |
-| `spot_subtypes` | Les sous-catégories d'un type | Ride : Gaps, Curbs, Plans inclinés, Rails, Goofy |
+| `spot_subtypes` | Les sous-catégories d'un type | Ride : Gaps, Curbs, Plans inclinés, Rails, Goofy ; Nature : Bivouac (Tente, Hamac) |
+
+## Sous-catégorie obligatoire ou facultative, et précisions
+
+Chaque type décide si sa sous-catégorie est **obligatoire** ou **facultative** :
+
+- **Ride** : obligatoire. Un spot Ride doit choisir entre Gaps, Curbs, Plans inclinés, Rails et Goofy.
+- **Nature** : facultative. Le formulaire propose une case « Bivouac », que l'on coche ou non.
+
+Une sous-catégorie peut avoir des **précisions**. Cocher « Bivouac » fait apparaître « Tente » et « Hamac », au choix et sans obligation. Le spot s'affiche alors « Nature · Bivouac », ou plus précisément « Nature · Bivouac · Hamac », avec l'icône correspondante sur la carte.
+
+Un spot ne porte qu'une seule sous-catégorie. Un spot à la fois Nature et Ride doit donc choisir : soit Bivouac, soit l'une des sous-catégories de Ride (et comme Ride l'impose, il faut en choisir une).
+
+Dans la base :
+
+- `spot_types.subtype_optional` : vrai pour un type dont la sous-catégorie est facultative ;
+- `spot_subtypes.parent_id` : pour une précision, la sous-catégorie qu'elle précise. Un seul niveau est permis.
+
+L'administration affiche les précisions (« Bivouac · Tente ») et permet de les renommer, de changer leur icône ou de les désactiver. En créer une nouvelle, ou rendre facultative la sous-catégorie d'un autre type, se fait pour l'instant dans le SQL Editor :
+
+```sql
+-- Une troisième précision pour Bivouac
+insert into public.spot_subtypes (spot_type_id, key, label, icon, sort_order, parent_id)
+select p.spot_type_id, 'bivouac_belle_etoile', 'Belle étoile', 'pin', 30, p.id
+from public.spot_subtypes p where p.key = 'bivouac';
+
+-- Rendre facultative la sous-catégorie d'un type
+update public.spot_types set subtype_optional = true where key = 'ride';
+```
 
 ## Plusieurs types pour un même spot
 

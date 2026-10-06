@@ -9,7 +9,7 @@
  * au premier affichage, ce qui demande une connexion.
  *
  * Licences : lucide-lab (ISC), pinhead (CC0), material-symbols-light (Apache 2.0),
- * fluent-emoji-high-contrast (MIT), boxicons (MIT), gcp (Apache 2.0),
+ * fluent-emoji-high-contrast (MIT), boxicons (MIT), gcp (Apache 2.0), iconmind (CC0),
  * game-icons (CC BY 3.0 : cette licence demande de citer la source, ce que
  * fait la section "Crédits" du README).
  */
@@ -33,6 +33,22 @@ export const EMBEDDED_ICONIFY_ICONS: Record<string, IconifyIcon> = {
   },
   // Icône dessinée pour l'application (type Ride). Elle n'existe pas chez Iconify :
   // le préfixe "spots:" est le nôtre, et elle n'est disponible que parce qu'elle est ici.
+  // Bivouac (option du type Nature) et ses deux précisions : tente, hamac.
+  'game-icons:forest-camp': {
+    width: 512,
+    height: 512,
+    body: '<path fill="currentColor" d="M350.5 33.05c-13.9 30.58-29.4 61.29-61.6 85.35c7.3 3.4 20.7 6.2 27.9 8.5c-12.2 18.7-33 36.4-52 52.3c11.1 5.7 22.1 10.3 33.1 14c-14.1 22.2-30.9 43.3-51.9 62.4c16.7 9.3 33.3 16.6 49.8 21.8c-17.9 25.4-40.4 49.6-72.1 76.1c51.5 26.5 97 38.8 142.2 37.4c1.8 0 3.7.1 5.5.1v-.3c39.9-2.2 79.6-15 123.2-38c-38.8-24.5-62.9-47.7-81.4-73.2c17.8-5.2 35.6-12.9 53.3-23.1c-25.8-17.7-44.2-38.6-58.9-61.5c12.1-3.7 24.1-8.7 36.1-15c-23.2-14.6-44.1-32.3-56.7-51.4c8.8-2.4 22.8-5.3 31.5-9.4c-38.5-21.76-48.9-53.16-68-86.05M173.6 336.8c-.1.3-.4.8-.6 1.1l19.4 139l72.2 1.2c-38.2-44.9-66-91.1-91-141.3m-.6 1.2c-23.8 47.8-44.8 94.2-86.44 137.2l76.84 1.3zm-20.7 1.1c-24.1 8.9-54.17 16.9-82.31 15.8c-11.18 39.8-26.38 80-52.57 115.8l46.65 1.6c43.13-40.8 64.23-85 88.23-133.2m186.5 68.8l-2.7 70.4l43 .6L373 409c-11.6 0-23.1-.3-34.2-1.1"/>',
+  },
+  'fluent-emoji-high-contrast:tent': {
+    width: 32,
+    height: 32,
+    body: '<g fill="currentColor"><path d="M27.737 12.244c.868-.025 1.375.457.872 1.165c-.707.995-1.627 1.78-2.763 2.151l-.592-1.509A1.62 1.62 0 0 0 23.726 13h-4.284a5.2 5.2 0 0 1-.624-2.492c0-2.09 1.59-3.763 3.306-4.694c.763-.414 1.298.133 1.17.991c-.01.07-.03.168-.05.277c-.045.231-.1.51-.1.665c0 2.485 1.978 4.498 4.463 4.498q.066 0 .13-.002"/><path d="M8.296 14a1 1 0 0 0-.4.16l.003.008a.6.6 0 0 0-.211.282L2.07 28.766c-.252.58.208 1.234.875 1.234H9.08V17.177l4.521 11.502a2.085 2.085 0 0 0 1.957 1.32h13.489c.667 0 1.126-.667.889-1.277l-5.618-14.316a.62.62 0 0 0-.593-.406zm9.709 8.624a.95.95 0 0 1-.875-.58l-1.245-3.064c-.252-.61.207-1.263.874-1.263h2.98a.95.95 0 0 1 .874.58l1.245 3.064c.252.61-.207 1.263-.874 1.263z"/></g>',
+  },
+  'iconmind:hammock-outline-thin': {
+    width: 24,
+    height: 24,
+    body: '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M4 6v15"/><path d="M20 6v15"/><path d="M4 8c0 8 16 8 16 0"/><path d="M4 12c0 7 16 7 16 0"/></g>',
+  },
   // Rampe d'escalier (sous-catégorie Rails), vectorisée d'après le dessin fourni.
   'spots:rail': {
     width: 512,
