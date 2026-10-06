@@ -193,6 +193,13 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 1200,
     },
     test: {
+      // "npm run test:coverage" : part du code exécutée par les tests, fichier par fichier.
+      coverage: {
+        provider: 'v8',
+        reporter: ['text-summary', 'html'],
+        include: ['src/**/*.{ts,tsx}'],
+        exclude: ['src/**/*.test.{ts,tsx}', 'src/test/**', 'src/types/**', 'src/**/*.d.ts', 'src/main.tsx'],
+      },
       environment: 'node',
       include: ['src/**/*.test.{ts,tsx}'],
     },

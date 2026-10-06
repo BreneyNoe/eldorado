@@ -6,7 +6,7 @@ Trois tables décrivent ce qu'on peut créer et noter. Rien n'est écrit en dur 
 |---|---|---|
 | `spot_types` | Les types de spots | Nature, Pêche, Baignade, Urbex, Ride |
 | `rating_categories` | Les catégories de notes de chaque type | Ride : Originalité, Difficulté, Faisabilité |
-| `spot_subtypes` | Les sous-catégories d'un type | Ride : Gaps, Ledges et curbs, Plans inclinés, Rails, Goofy |
+| `spot_subtypes` | Les sous-catégories d'un type | Ride : Gaps, Curbs, Plans inclinés, Rails, Goofy |
 
 ## Plusieurs types pour un même spot
 
@@ -42,7 +42,7 @@ La colonne `icon` contient un nom d'icône, de deux formes possibles.
 
 Un type accepte les deux formes ; une sous-catégorie, un nom Iconify.
 
-**Icône dessinée soi-même** : elle n'existe pas chez Iconify, il faut donc l'embarquer. Ajoute son dessin dans `src/features/spots/logic/iconifyIcons.ts` sous un nom commençant par `spots:` (c'est le cas de `spots:ride`), puis utilise ce nom comme n'importe quel autre. Pour qu'elle prenne la couleur voulue sur la carte et dans les listes, son dessin doit utiliser `currentColor` et non une couleur fixe.
+**Icône dessinée soi-même** : elle n'existe pas chez Iconify, il faut donc l'embarquer. Ajoute son dessin dans `src/features/spots/logic/iconifyIcons.ts` sous un nom commençant par `spots:` (c'est le cas de `spots:ride` et de `spots:rail`), puis utilise ce nom comme n'importe quel autre. Pour qu'elle prenne la couleur voulue sur la carte et dans les listes, son dessin doit utiliser `currentColor` et non une couleur fixe.
 
 - Les icônes actuelles sont embarquées dans l'application (`src/features/spots/logic/iconifyIcons.ts`) : elles s'affichent sans connexion.
 - Une autre icône Iconify fonctionne aussi, sans rien changer au code : elle est téléchargée chez Iconify au premier affichage, ce qui demande une connexion. Pour qu'elle s'affiche hors ligne, ajoute-la au fichier ci-dessus.

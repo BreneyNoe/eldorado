@@ -92,15 +92,15 @@ describe('rangs', () => {
   })
 
   it('chaque seuil donne son rang, et le garde jusqu\'au suivant', () => {
-    expect(avatarRank(5)?.title).toBe('Explorateur')
+    expect(avatarRank(5)?.title).toBe('Cheap researcher')
     expect(avatarRank(14)?.id).toBe('bronze')
-    expect(avatarRank(15)?.title).toBe('Pionnier')
+    expect(avatarRank(15)?.title).toBe('Explorer')
     expect(avatarRank(29)?.id).toBe('silver')
-    expect(avatarRank(30)?.title).toBe('Expert')
+    expect(avatarRank(30)?.title).toBe('Spot Finder')
     expect(avatarRank(49)?.id).toBe('gold')
-    expect(avatarRank(50)?.title).toBe('Gardien des lieux')
+    expect(avatarRank(50)?.title).toBe('Land Guardians')
     expect(avatarRank(79)?.id).toBe('platinum')
-    expect(avatarRank(80)?.title).toBe('Légende')
+    expect(avatarRank(80)?.title).toBe('Cavalier of Eldorado')
     expect(avatarRank(4000)?.id).toBe('dark')
   })
 

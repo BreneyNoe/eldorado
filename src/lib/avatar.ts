@@ -71,11 +71,11 @@ export interface AvatarRank {
 
 /** Du premier au dernier rang. Pour changer un seuil, c'est ici. */
 export const AVATAR_RANKS: readonly AvatarRank[] = [
-  { id: 'bronze', threshold: 5, title: 'Explorateur', metal: 'Bronze' },
-  { id: 'silver', threshold: 15, title: 'Pionnier', metal: 'Argent' },
-  { id: 'gold', threshold: 30, title: 'Expert', metal: 'Or' },
-  { id: 'platinum', threshold: 50, title: 'Gardien des lieux', metal: 'Platine' },
-  { id: 'dark', threshold: 80, title: 'Légende', metal: 'Acier noir et argent' },
+  { id: 'bronze', threshold: 5, title: 'Cheap researcher', metal: 'Bronze' },
+  { id: 'silver', threshold: 15, title: 'Explorer', metal: 'Argent' },
+  { id: 'gold', threshold: 30, title: 'Spot Finder', metal: 'Or' },
+  { id: 'platinum', threshold: 50, title: 'Land Guardians', metal: 'Platine' },
+  { id: 'dark', threshold: 80, title: 'Cavalier of Eldorado', metal: 'Acier noir et argent' },
 ]
 
 /** Rang atteint avec ce nombre de spots publiés, ou null en dessous du premier seuil. */

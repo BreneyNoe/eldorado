@@ -62,11 +62,11 @@ Un ornement entoure l'avatar de ceux qui publient des spots. Il change avec le n
 
 | Spots publiés | Rang | Ornement |
 |---|---|---|
-| 5 | Explorateur (Bronze) | Tourbillon de bronze |
-| 15 | Pionnier (Argent) | Tourbillon d'argent |
-| 30 | Expert (Or) | Couronne d'or tressée |
-| 50 | Gardien des lieux (Platine) | Tourbillon d'argent serti de rubis |
-| 80 | Légende (Acier noir et argent) | Grande roue dentée d'acier, au cadran romain |
+| 5 | Cheap researcher (Bronze) | Tourbillon de bronze |
+| 15 | Explorer (Argent) | Tourbillon d'argent |
+| 30 | Spot Finder (Or) | Couronne d'or tressée |
+| 50 | Land Guardians (Platine) | Tourbillon d'argent serti de rubis |
+| 80 | Cavalier of Eldorado (Acier noir et argent) | Grande roue dentée d'acier, au cadran romain |
 
 - L'ornement apparaît partout où l'avatar apparaît. L'avatar garde sa taille et l'ornement s'ajoute autour ; sur le bouton rond du compte, le tout est réduit pour tenir dans le bouton.
 - L'ornement du dernier rang est très large (plus de trois fois l'avatar). Pour qu'il ne prenne pas toute la place, l'ensemble est alors plafonné à 2,4 fois la taille d'un avatar nu, et à 320 px de large.

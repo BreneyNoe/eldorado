@@ -31,6 +31,7 @@ describe('icônes embarquées', () => {
       'material-symbols-light:escalator-outline',
       'pinhead:flush-curb',
       'pinhead:lowered-curb',
+      'spots:rail',
       'spots:ride',
     ])
   })
@@ -52,7 +53,7 @@ describe('icônes embarquées', () => {
 
   it('les icônes d\'un seul ton suivent la couleur du texte', () => {
     // Indispensable pour le marqueur de la carte, où l'icône est dessinée en blanc.
-    for (const name of ['spots:ride', 'game-icons:fishing', 'game-icons:castle-ruins', 'boxicons:swimming']) {
+    for (const name of ['spots:ride', 'spots:rail', 'game-icons:fishing', 'game-icons:castle-ruins', 'boxicons:swimming']) {
       expect(EMBEDDED_ICONIFY_ICONS[name].body, name).toContain('currentColor')
     }
   })
